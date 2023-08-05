@@ -3,8 +3,8 @@
 
 ### to start
 compile and run using the following:
-    g++ -o chess main.cpp
-    ./chess
+g++ -o chess main.cpp
+./chess
 
 ![starting position for game](starting_position.png "starting position for game")
 
