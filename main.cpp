@@ -423,11 +423,11 @@ class ChessGame {
     std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
         uint_t max = 0, lnum = 8;
         bool flip = true;
-        cout "\n\n   ";
+        cout "\n\n\t   ";
         for (size_t i = 0; i < 8; i++) {
             cout alpha8[i] << " ";
         }
-        cout " \n " << lnum << " ";
+        cout " \n\t " << lnum << " ";
         for (std::tuple<pos_t, piece_t, team_t> n : board) {
             if (!flip) {
                 cout BOX << std::get<1>(n) << " " << COLOR_RESET;
@@ -437,9 +437,9 @@ class ChessGame {
             flip = !flip;
             if (max == 7) {
                 if (lnum - 1 == 0) {
-                    cout lnum << " \n " << "  ";
+                    cout lnum << " \n\t " << "  ";
                 } else {
-                    cout lnum << " \n " << lnum-1 << " ";
+                    cout lnum << " \n\t " << lnum-1 << " ";
                 }
                 flip = !flip;
                 max = 0;
