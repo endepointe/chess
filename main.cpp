@@ -307,15 +307,56 @@ class ChessGame {
             p.possible_moves.push_back(right2 + std::to_string(down1));
         }
     }
+    void update_moves_for_bishop(PieceInfo& p) {
+        char left = p.pos[0] - 1;
+        char right = p.pos[0] + 1;
+        int up = atoi(&p.pos[1]) + 1;
+        int down = atoi(&p.pos[1]) - 1; // int to check for < 0
+        p.possible_moves.clear();
+        // left+up
+        if (left >= 97 && up <= 8) { 
+            while (left != 'a'-1) {
+                p.possible_moves.push_back(
+                        (left)+std::to_string(up));
+                left--;
+                up++;
+            }
+        }
+        // right+up
+        if (right <= 122 && up <= 8) { 
+            while (right != 'h'+1) {
+                p.possible_moves.push_back(
+                        (right)+std::to_string(up));
+                right++;
+                up++;
+            }
+        }
+        // down+left
+        if (down >= 1 && left != 'a'-1) { 
+            while (down >= 1) {
+                p.possible_moves.push_back(left + std::to_string(down)); 
+                down--;
+                left--;
+            }
+        }
+        // down+right
+        if (down >= 1 && right != 'h'+1) {
+            while (down >= 1) {
+                p.possible_moves.push_back(right + std::to_string(down));
+                down--;
+                right++;
+            }
+        }
+
+    }
     void update_moves_for_rook(PieceInfo& p) {
         char left = p.pos[0] - 1;
         char right = p.pos[0] + 1;
         int up = atoi(&p.pos[1]) + 1;
         int down = atoi(&p.pos[1]) - 1; // int to check for < 0
         p.possible_moves.clear();
-        cout " current position " << p.pos << "\n";
         if (left >= 97) { 
-            while (left != 'a' - 1) {
+            while (left != 'a'-1) {
                 p.possible_moves.push_back(
                         (left)+std::to_string(atoi(&p.pos[1])));
                 left--;
@@ -353,8 +394,7 @@ class ChessGame {
             }
             // bishop
             if (p.name == 2) { 
-                cout "bishops moves\n";
-                //update_moves_for_rook(p);
+                update_moves_for_bishop(p);
             }
             // rooks
             if (p.name == 3) { 
