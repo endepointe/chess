@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <cstdlib>
 #include <vector>
@@ -29,7 +30,7 @@ enum Piece {KING,KNIGHT,BISHOP,ROOK};
 struct PieceInfo {
     Piece name;
     pos_t pos;
-    pos_t possible_move[4];
+    std::vector<pos_t> possible_moves;
 };
 
 class ChessTeam {
@@ -42,9 +43,9 @@ class ChessTeam {
     std::string team;
     std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
     std::vector<PieceInfo> pieces = {
-        PieceInfo{KING,"",{"","","",""}},PieceInfo{KNIGHT,"",{"","","",""}},
-        PieceInfo{KNIGHT,"",{"","","",""}},PieceInfo{BISHOP,"",{"","","",""}},
-        PieceInfo{BISHOP,"",{"","","",""}},PieceInfo{ROOK,"",{"","","",""}},
+        PieceInfo{KING,"",{""}},PieceInfo{KNIGHT,"",{""}},
+        PieceInfo{KNIGHT,"",{""}},PieceInfo{BISHOP,"",{""}},
+        PieceInfo{BISHOP,"",{""}},PieceInfo{ROOK,"",{""}},
     };
 
     public:
@@ -239,32 +240,52 @@ class ChessGame {
     // 97 - 122
     void update_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
+            // king
             if (p.name == 0) {
                 char move_left = p.pos[0] - 1;
                 char move_right = p.pos[0] + 1;
                 int move_up = atoi(&p.pos[1]) + 1;
                 int move_down = atoi(&p.pos[1]) - 1; // int to check for < 0
-                std::cout << move_left<<" "<<move_right<<" "<<move_up <<" "<<move_down<<"\n";
-                for (uint_t i = 0; i < 4; i++) {p.possible_move[i] = "";}
-                if (move_left >= 97) { p.possible_move[0] = 
-                    (move_left) + std::to_string(atoi(&p.pos[1]));}
-                if (move_right <= 104) { p.possible_move[1] = 
-                    (move_right) + std::to_string(atoi(&p.pos[1]));}
-                if (move_up >= 1) { p.possible_move[2] = 
-                    p.pos[0] + std::to_string(move_up); }
-                if (move_down >= 8) { p.possible_move[3] = 
-                    p.pos[0] + std::to_string(move_down); }
+                p.possible_moves.clear();
+                if (move_left >= 97) { p.possible_moves.push_back(
+                    (move_left) + std::to_string(atoi(&p.pos[1])));
+                }
+                if (move_right <= 104) { 
+                    p.possible_moves.push_back(
+                        (move_right) + std::to_string(atoi(&p.pos[1])));
+                }
+                if (move_up >= 1) { 
+                    p.possible_moves.push_back(
+                    p.pos[0] + std::to_string(move_up)); 
+                }
+                if (move_down >= 8) {
+                    p.possible_moves.push_back(
+                        p.pos[0] + std::to_string(move_down));
+                }
             }
-            if (p.name == 1)
+            // knight
+            if (p.name == 1) { 
+                std::cout << "knights moves\n";
+            }
+            // bishop
+            if (p.name == 2) { 
+                std::cout << "bishops moves\n";
+            }
+            // rooks
+            if (p.name == 3) { 
+                std::cout << "rooks moves\n";
+            }
         }
     }
     void print_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
             std::cout << team.get_piece_symbol(p.name) << " can move to: ";
-            std::cout << p.possible_move[0] << ", " << p.possible_move[1] << ", ";
-            std::cout << p.possible_move[2] << ", "  << p.possible_move[3];
+            for (pos_t m : p.possible_moves) {
+                std::cout << m << " ";
+            }
             std::cout << "\n";
         }
+        std::cout << "\n";
     }
     void redraw_board() {
         for (std::tuple<pos_t, piece_t, team_t> n : board) {
@@ -303,9 +324,6 @@ int main() {
     ChessTeam p1 = chess.get_player(Team::WHITE);
     ChessTeam p2 = chess.get_player(Team::BLACK);
     
-    for (PieceInfo p : p1.get_pieces()) {
-        std::cout << p.name << " " << p.pos << "\n";
-    }
     chess.update_possible_moves_for_player(p1);
     chess.print_possible_moves_for_player(p1);
 
