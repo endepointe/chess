@@ -237,35 +237,42 @@ class ChessGame {
             }
         }
     }
+    void update_moves_for_king(PieceInfo& p) {
+        char move_left = p.pos[0] - 1;
+        char move_right = p.pos[0] + 1;
+        int move_up = atoi(&p.pos[1]) + 1;
+        int move_down = atoi(&p.pos[1]) - 1; // int to check for < 0
+        p.possible_moves.clear();
+        if (move_left >= 97) { p.possible_moves.push_back(
+            (move_left) + std::to_string(atoi(&p.pos[1])));
+        }
+        if (move_right <= 104) { 
+            p.possible_moves.push_back(
+                (move_right) + std::to_string(atoi(&p.pos[1])));
+        }
+        if (move_up >= 1) { 
+            p.possible_moves.push_back(
+            p.pos[0] + std::to_string(move_up)); 
+        }
+        if (move_down >= 8) {
+            p.possible_moves.push_back(
+                p.pos[0] + std::to_string(move_down));
+        }
+    }
+    void update_moves_for_knight(PieceInfo& p) {
+        int up = atoi(&p.pos[1]) + 2;
+        char left = p.pos[0] - 1;
+        std::cout << left << " " << up << " \n";
+    }
     // 97 - 122
     void update_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
-            // king
             if (p.name == 0) {
-                char move_left = p.pos[0] - 1;
-                char move_right = p.pos[0] + 1;
-                int move_up = atoi(&p.pos[1]) + 1;
-                int move_down = atoi(&p.pos[1]) - 1; // int to check for < 0
-                p.possible_moves.clear();
-                if (move_left >= 97) { p.possible_moves.push_back(
-                    (move_left) + std::to_string(atoi(&p.pos[1])));
-                }
-                if (move_right <= 104) { 
-                    p.possible_moves.push_back(
-                        (move_right) + std::to_string(atoi(&p.pos[1])));
-                }
-                if (move_up >= 1) { 
-                    p.possible_moves.push_back(
-                    p.pos[0] + std::to_string(move_up)); 
-                }
-                if (move_down >= 8) {
-                    p.possible_moves.push_back(
-                        p.pos[0] + std::to_string(move_down));
-                }
+                update_moves_for_king(p);
             }
             // knight
             if (p.name == 1) { 
-                std::cout << "knights moves\n";
+                update_moves_for_knight(p);
             }
             // bishop
             if (p.name == 2) { 
