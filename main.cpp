@@ -17,22 +17,34 @@
 #define BOX             "\x1b[48;5;232m"
 #define COLOR_RESET     "\x1b[0m"
 
-using PIECE_T = std::string; 
-using POS_T = std::string;
+using piece_t = std::string; 
+using pos_t = std::string;
+using team_t = std::string;
+using uint_t = unsigned int;
 
 enum State {UNFINISHED, WHITE_WON, BLACK_WON};
 enum Team {WHITE, BLACK};
-enum Piece {KING,KNIGHT,ROOK,BISHOP};
+enum Piece {KING,KNIGHT,BISHOP,ROOK};
+struct PieceInfo {
+    Piece name;
+    pos_t pos;
+    pos_t possible_moves[4];
+};
 
 class ChessTeam {
     private:
-    std::map<Team, std::string> team_map {
+    std::map<Team, team_t> team_map {
         {Team::WHITE, "WHITE"},
         {Team::BLACK, "BLACK"}
     };
-    std::map<Piece, std::string> piece_map;
+    std::map<Piece, team_t> piece_map;
     std::string team;
-    std::vector<Piece> pieces = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
+    std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
+    std::vector<PieceInfo> pieces = {
+        PieceInfo{KING, ""}, PieceInfo{KNIGHT,""},
+        PieceInfo{KNIGHT, ""}, PieceInfo{BISHOP,""},
+        PieceInfo{BISHOP, ""}, PieceInfo{ROOK,""},
+    };
 
     public:
     ChessTeam(Team t) : team(team_map[t]) {
@@ -56,14 +68,35 @@ class ChessTeam {
     std::string get_team() {
         return team;
     }
-    void get_pieces() {
-        for (Piece p : pieces) {
-            std::cout << piece_map[p] << " ";
-        }
-        std::cout << "\n";
+
+    std::vector<PieceInfo>& get_pieces() {
+        return pieces;
     }
-    POS_T get_piece(Piece p) {
+    piece_t get_piece(Piece p) {
         return piece_map[p];
+    }
+
+    void set_piece_position(PieceInfo& p, pos_t pos) {
+        p.pos = pos;
+    }
+
+    pos_t get_piece_position(PieceInfo p) {
+        return p.pos;
+    }
+    // this should be a fn for ChessGame
+    piece_t get_piece_at_position(pos_t pos){
+        for (PieceInfo p : pieces){
+            if (p.pos == pos) {
+                return piece_map[p.name];
+            }
+        }
+        return "*";
+    }
+    void take_piece(ChessTeam &other_team, Piece p) {
+        std::cout << "Team: " << get_team();
+        std::cout << " takes:" << other_team.get_team();
+        std::cout << "'s " << other_team.get_piece(p) << "\n";
+        other_team.get_pieces();
     }
 };
 
@@ -75,8 +108,8 @@ class ChessGame {
         {State::BLACK_WON, "BLACK_WON"}
     };
     std::string state;
-    std::vector<std::tuple<POS_T, PIECE_T>> board;
-    std::map<POS_T, unsigned int> starting_location = {
+    std::vector<std::tuple<pos_t, piece_t, team_t>> board;
+    std::map<pos_t, unsigned int> starting_location = {
         {" ",0},
         {"a2",1},{"b2",2},{"c2",3},{"f2",4},{"g2",5},{"h2",6},
         {"a1",7},{"b1",8},{"c1",9},{"f1",10},{"g1",11},{"h1",12},
@@ -88,80 +121,150 @@ class ChessGame {
     ChessTeam player_two = ChessTeam(Team::BLACK);
 
     public:
-    ChessGame();
-    ~ChessGame();
+    ChessGame() {
+        state = state_map[State::UNFINISHED];
+    };
+    ~ChessGame() {};
     std::string get_game_state() {return state;}
     void set_game_state(State s) {
         state = state_map[s];
     }
+    ChessTeam get_player(Team t) {
+        if (t == 0) {
+            return player_one;
+        }
+        return player_two;
+    }
+
     void set_board() {
         for (int row = size - 1; row >= 0; row--) {
             for (int col = 0; col < size; col++) {
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
                 switch (starting_location[loc]) {
                     case 0:
-                        board.push_back(std::make_tuple(loc, "*"));
+                        board.push_back(std::make_tuple(loc, "*",""));
                         break;
                     case 1:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(ROOK)));
+                                    player_one.get_piece(ROOK),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(5),loc);
                         break;
                     case 2:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(BISHOP)));
+                                    player_one.get_piece(BISHOP),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(4),loc);
                         break;
                     case 3:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KNIGHT)));
+                                    player_one.get_piece(KNIGHT),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(2),loc);
                         break;
                     case 4:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KNIGHT)));
+                                    player_two.get_piece(KNIGHT),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(2),loc);
                         break;
                     case 5:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(BISHOP)));
+                                    player_two.get_piece(BISHOP),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(4),loc);
                         break;
                     case 6:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(ROOK)));
+                                    player_two.get_piece(ROOK),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(5),loc);
                         break;
                     case 7:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KING)));
+                                    player_one.get_piece(KING),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(0),loc);
                         break;
                     case 8:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(BISHOP)));
+                                    player_one.get_piece(BISHOP),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(3),loc);
                         break;
                     case 9:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KNIGHT)));
+                                    player_one.get_piece(KNIGHT),
+                                    player_one.get_team()));
+                        player_one.set_piece_position(
+                                player_one.get_pieces().at(1),loc);
                         break;
                     case 10:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KNIGHT)));
+                                    player_two.get_piece(KNIGHT),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(1),loc);
                         break;
                     case 11:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(BISHOP)));
+                                    player_two.get_piece(BISHOP),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(3),loc);
                         break;
                     case 12:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KING)));
+                                    player_two.get_piece(KING),
+                                    player_two.get_team()));
+                        player_two.set_piece_position(
+                                player_two.get_pieces().at(0),loc);
                         break;
                     default:
-                        //board.push_back(std::make_tuple(loc, " "));
                         break;
                 }
             }
         }
     }
+    // 97 - 122
+    void update_possible_moves_for_player(ChessTeam& team) {
+        for (PieceInfo p : team.get_pieces()) {
+            std::cout << p.name << " "<< p.pos[0] << " " << p.pos[1] << "\n";
+            switch (p.name) {
+                case 0:
+                    if (static_cast<uint_t>(p.pos[0]) >= 97) {
+                    }
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    void redraw_board() {
+        for (std::tuple<pos_t, piece_t, team_t> n : board) {
+            std::cout<<std::get<0>(n)<<" "<<std::get<1>(n)<<" "<<std::get<2>(n);
+            std::cout << "\n";
+        }
+    }
     
-    std::vector<std::tuple<POS_T, PIECE_T>> print_board() {
+    std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
         unsigned int max = 0;
-        bool flip = false;
-        for (std::tuple<POS_T, PIECE_T> n : board) {
+        bool flip = true;
+        for (std::tuple<pos_t, piece_t, team_t> n : board) {
             if (!flip) {
                 std::cout << BOX << std::get<1>(n) << " " << COLOR_RESET;
             } else {
@@ -180,29 +283,21 @@ class ChessGame {
     }
 };
 
-ChessGame::ChessGame() {
-    state = state_map[State::UNFINISHED];
-}
-ChessGame::~ChessGame() {
-    // delete any memory allocations
-}
-
 int main() {
     ChessGame chess = ChessGame();
     chess.set_board();
-    std::cout << chess.get_game_state() << std::endl;
     chess.print_board();
-    chess.set_game_state(State::BLACK_WON);
-    std::cout << chess.get_game_state() << std::endl;
 
-    ChessTeam p1 = ChessTeam(Team::WHITE);
-    ChessTeam p2 = ChessTeam(Team::BLACK);
-    std::cout << p1.get_team() << "\n";
-    std::cout << p2.get_team() << "\n";
-    p1.get_pieces();
-    p2.get_pieces();
-    std::cout << p2.get_piece(KING) << "\n";
-    std::cout <<"\x1b[48;5;232m" << "Opaque Grey Text" << "\x1b[0m" << std::endl;
-    std::cout << (2 % 2) << std::endl;
+    ChessTeam p1 = chess.get_player(Team::WHITE);
+    ChessTeam p2 = chess.get_player(Team::BLACK);
+    
+    for (PieceInfo p : p1.get_pieces()) {
+        std::cout << p.name << " " << p.pos << "\n";
+    }
+    chess.update_possible_moves_for_player(p1);
+
+    p1.take_piece(p2, ROOK);
+    std::cout << 'h' - 1 << 'h' - 0;
+
     return 0;
 }
