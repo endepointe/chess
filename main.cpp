@@ -239,19 +239,22 @@ class ChessGame {
     void update_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
             std::cout << p.name << p.possible_move[0] << " "<< p.pos[0] << " " << p.pos[1] << "\n";
-            uint_t move_left = p.pos[0] - 1;
-            uint_t move_right = p.pos[0] + 1;
-            uint_t move_up = p.pos[1] + 1;
-            uint_t move_down = p.pos[1] - 1;
+            char move_left = p.pos[0] - 1;
+            char move_right = p.pos[0] + 1;
+            char move_up = p.pos[1] + 1;
+            char move_down = p.pos[1] - 1;
+            std::cout << move_left<<" "<<move_right<<" "<<move_up<<" "<<move_down<<"\n";
             for (uint_t i = 0; i < 4; i++) {p.possible_move[i] = "";}
+            /*
             if (move_left >= 97) { p.possible_move[0] = 
-                static_cast<char>(move_left) + std::to_string(p.pos[1]);}
+                (move_left) + std::to_string(p.pos[1]);}
             if (move_right <= 104) { p.possible_move[1] = 
-                static_cast<char>(move_right) + std::to_string(p.pos[1]);}
+                (move_right) + std::to_string(p.pos[1]);}
             if (move_up >= 1) { p.possible_move[2] = 
-                p.pos[0] + std::to_string(move_up); }
+                p.pos[0] + (move_up); }
             if (move_down >= 8) { p.possible_move[3] = 
-                p.pos[0] + "G" + std::to_string(move_down); }
+                p.pos[0] + (move_down); }
+                */
         }
     }
     void print_possible_moves_for_player(ChessTeam& team) {
