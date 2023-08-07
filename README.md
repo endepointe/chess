@@ -4,7 +4,7 @@
 ### to start
 compile using the following:
 
-    g++ -o chess main.cpp
+    make
 
 run using:
 
