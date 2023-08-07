@@ -18,11 +18,13 @@
 #define BISHOP_BLACK    "\u265D"
 #define BOX             "\x1b[48;5;232m"
 #define COLOR_RESET     "\x1b[0m"
+#define cout             std::cout<<
 
 using piece_t = std::string; 
 using pos_t = std::string;
 using team_t = std::string;
 using uint_t = unsigned int;
+
 
 enum State {UNFINISHED, WHITE_WON, BLACK_WON};
 enum Team {WHITE, BLACK};
@@ -83,7 +85,7 @@ class ChessTeam {
         p.pos = pos;
     }
 
-    pos_t get_piece_position(PieceInfo p) {
+    pos_t get_piece_position(PieceInfo& p) {
         return p.pos;
     }
     // this should be a fn for ChessGame
@@ -96,9 +98,9 @@ class ChessTeam {
         return "*";
     }
     void take_piece(ChessTeam &other_team, Piece p) {
-        std::cout << "Team: " << get_team();
-        std::cout << " takes:" << other_team.get_team();
-        std::cout << "'s " << other_team.get_piece_symbol(p) << "\n";
+        cout "Team: " << get_team();
+        cout " takes:" << other_team.get_team();
+        cout "'s " << other_team.get_piece_symbol(p) << "\n";
         other_team.get_pieces();
     }
 };
@@ -141,7 +143,7 @@ class ChessGame {
 
     void set_board() {
         for (int row = size - 1; row >= 0; row--) {
-            for (int col = 0; col < size; col++) {
+            for (uint_t col = 0; col < size; col++) {
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
                 switch (starting_location[loc]) {
                     case 0:
@@ -238,31 +240,92 @@ class ChessGame {
         }
     }
     void update_moves_for_king(PieceInfo& p) {
-        char move_left = p.pos[0] - 1;
-        char move_right = p.pos[0] + 1;
-        int move_up = atoi(&p.pos[1]) + 1;
-        int move_down = atoi(&p.pos[1]) - 1; // int to check for < 0
+        char left = p.pos[0] - 1;
+        char right = p.pos[0] + 1;
+        int up = atoi(&p.pos[1]) + 1;
+        int down = atoi(&p.pos[1]) - 1; // int to check for < 0
         p.possible_moves.clear();
-        if (move_left >= 97) { p.possible_moves.push_back(
-            (move_left) + std::to_string(atoi(&p.pos[1])));
+        if (left >= 97) { 
+            p.possible_moves.push_back((left) + std::to_string(atoi(&p.pos[1])));
         }
-        if (move_right <= 104) { 
-            p.possible_moves.push_back(
-                (move_right) + std::to_string(atoi(&p.pos[1])));
+        if (right <= 104) { 
+            p.possible_moves.push_back((right) + std::to_string(atoi(&p.pos[1])));
         }
-        if (move_up >= 1) { 
-            p.possible_moves.push_back(
-            p.pos[0] + std::to_string(move_up)); 
+        if (up >= 1) { 
+            p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
         }
-        if (move_down >= 8) {
-            p.possible_moves.push_back(
-                p.pos[0] + std::to_string(move_down));
+        if (down >= 8) {
+            p.possible_moves.push_back(p.pos[0] + std::to_string(down));
+        }
+        if (up <= 8 && left >= 97) {
+            p.possible_moves.push_back(left + std::to_string(up));
+        }
+        if (up <= 8 && right <= 122) {
+            p.possible_moves.push_back(right + std::to_string(up));
+        }
+        if (down >= 1 && right <= 122) {
+            p.possible_moves.push_back(right + std::to_string(down));
+        }
+        if (down >= 1 && left >= 97) {
+            p.possible_moves.push_back(left + std::to_string(down));
         }
     }
     void update_moves_for_knight(PieceInfo& p) {
-        int up = atoi(&p.pos[1]) + 2;
+        int up2 = atoi(&p.pos[1]) + 2;
+        int down2 = atoi(&p.pos[1]) - 2;
+        int up1 = atoi(&p.pos[1]) + 1;
+        int down1 = atoi(&p.pos[1]) - 1;
+        char left1 = p.pos[0] - 1;
+        char right1 = p.pos[0] + 1;
+        char left2 = p.pos[0] - 2;
+        char right2 = p.pos[0] + 2;
+
+        p.possible_moves.clear();
+
+        if (up2 <= 8 && left1 >= 97) {
+            p.possible_moves.push_back(left1 + std::to_string(up2));
+        }
+        if (up2 <= 8 && right1 <= 122) {
+            p.possible_moves.push_back(right1 + std::to_string(up2));
+        }
+        if (down2 >= 1 && left1 >= 97) {
+            p.possible_moves.push_back(left1 + std::to_string(down2));
+        }
+        if (down2 >= 1 && right1 <= 122) {
+            p.possible_moves.push_back(right1 + std::to_string(down2));
+        }
+        if (up1 <= 8 && left2 >= 97) {
+            p.possible_moves.push_back(left2 + std::to_string(up1));
+        }
+        if (down1 >= 1 && left2 >= 97) {
+            p.possible_moves.push_back(left2 + std::to_string(down1));
+        }
+        if (up1 <= 8 && right2 <= 122) {
+            p.possible_moves.push_back(right2 + std::to_string(up1));
+        }
+        if (down1 >= 1 && right2 <= 122) {
+            p.possible_moves.push_back(right2 + std::to_string(down1));
+        }
+    }
+    void update_moves_for_rook(PieceInfo& p) {
         char left = p.pos[0] - 1;
-        std::cout << left << " " << up << " \n";
+        char right = p.pos[0] + 1;
+        int up = atoi(&p.pos[1]) + 1;
+        int down = atoi(&p.pos[1]) - 1; // int to check for < 0
+        p.possible_moves.clear();
+        cout " current position " << p.pos << "\n";
+        if (left >= 97) { 
+            p.possible_moves.push_back((left) + std::to_string(atoi(&p.pos[1])));
+        }
+        if (right <= 104) { 
+            p.possible_moves.push_back((right) + std::to_string(atoi(&p.pos[1])));
+        }
+        if (up >= 1) { 
+            p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
+        }
+        if (down >= 8) {
+            p.possible_moves.push_back(p.pos[0] + std::to_string(down));
+        }
     }
     // 97 - 122
     void update_possible_moves_for_player(ChessTeam& team) {
@@ -276,49 +339,65 @@ class ChessGame {
             }
             // bishop
             if (p.name == 2) { 
-                std::cout << "bishops moves\n";
+                cout "bishops moves\n";
+                //update_moves_for_rook(p);
             }
             // rooks
             if (p.name == 3) { 
-                std::cout << "rooks moves\n";
+                update_moves_for_rook(p);
             }
         }
     }
     void print_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
-            std::cout << team.get_piece_symbol(p.name) << " can move to: ";
+            cout team.get_piece_symbol(p.name);
+            cout " at position " << team.get_piece_position(p) << " can move to: ";
             for (pos_t m : p.possible_moves) {
-                std::cout << m << " ";
+                cout m << " ";
             }
-            std::cout << "\n";
+            cout "\n";
         }
-        std::cout << "\n";
+        cout "\n";
     }
     void redraw_board() {
         for (std::tuple<pos_t, piece_t, team_t> n : board) {
-            std::cout<<std::get<0>(n)<<" "<<std::get<1>(n)<<" "<<std::get<2>(n);
-            std::cout << "\n";
+            cout std::get<0>(n)<<" "<<std::get<1>(n)<<" "<<std::get<2>(n);
+            cout "\n";
         }
     }
     
     std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
-        unsigned int max = 0;
+        uint_t max = 0, lnum = 8;
         bool flip = true;
+        cout "   ";
+        for (size_t i = 0; i < 8; i++) {
+            cout alpha8[i] << " ";
+        }
+        cout " \n " << lnum << " ";
         for (std::tuple<pos_t, piece_t, team_t> n : board) {
             if (!flip) {
-                std::cout << BOX << std::get<1>(n) << " " << COLOR_RESET;
+                cout BOX << std::get<1>(n) << " " << COLOR_RESET;
             } else {
-                std::cout << std::get<1>(n) << " ";
+                cout std::get<1>(n) << " ";
             }
             flip = !flip;
             if (max == 7) {
-                std::cout << " \n";
+                if (lnum - 1 == 0) {
+                    cout lnum << " \n " << "  ";
+                } else {
+                    cout lnum << " \n " << lnum-1 << " ";
+                }
                 flip = !flip;
                 max = 0;
+                lnum--;
             } else {
                 max++;
             }
         }
+        for (size_t i = 0; i < 8; i++) {
+            cout alpha8[i] << " ";
+        }
+        cout "\n\n";
         return board;
     }
 };
@@ -333,7 +412,6 @@ int main() {
     
     chess.update_possible_moves_for_player(p1);
     chess.print_possible_moves_for_player(p1);
-
 
     p1.take_piece(p2, ROOK);
 
