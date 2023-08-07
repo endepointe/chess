@@ -41,9 +41,9 @@ class ChessTeam {
     std::string team;
     std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
     std::vector<PieceInfo> pieces = {
-        PieceInfo{KING, ""}, PieceInfo{KNIGHT,""},
-        PieceInfo{KNIGHT, ""}, PieceInfo{BISHOP,""},
-        PieceInfo{BISHOP, ""}, PieceInfo{ROOK,""},
+        PieceInfo{KING,"",{"","","",""}},PieceInfo{KNIGHT,"",{"","","",""}},
+        PieceInfo{KNIGHT,"",{"","","",""}},PieceInfo{BISHOP,"",{"","","",""}},
+        PieceInfo{BISHOP,"",{"","","",""}},PieceInfo{ROOK,"",{"","","",""}},
     };
 
     public:
@@ -72,6 +72,7 @@ class ChessTeam {
     std::vector<PieceInfo>& get_pieces() {
         return pieces;
     }
+
     piece_t get_piece_symbol(Piece p) {
         return piece_map[p];
     }
@@ -236,19 +237,19 @@ class ChessGame {
     }
     // 97 - 122
     void update_possible_moves_for_player(ChessTeam& team) {
-        for (PieceInfo p : team.get_pieces()) {
-            std::cout << p.name << " "<< p.pos[0] << " " << p.pos[1] << "\n";
+        for (PieceInfo& p : team.get_pieces()) {
+            std::cout << p.name << p.possible_move[0] << " "<< p.pos[0] << " " << p.pos[1] << "\n";
             uint_t move_left = p.pos[0] - 1;
             uint_t move_right = p.pos[0] + 1;
             uint_t move_up = p.pos[1] + 1;
             uint_t move_down = p.pos[1] - 1;
             std::cout << move_left << " KJKJk\n\n";
             for (uint_t i = 0; i < 4; i++) {p.possible_move[i] = "";}
-            std::cout << "tewd: " << std::to_string(move_left) << "\n";
+            std::cout << "tewd: " << static_cast<char>(move_down) << "\n";
             if (move_left >= 97) { p.possible_move[0] = 
-                std::to_string(move_left) + std::to_string(p.pos[1]);}
+                static_cast<char>(move_left) + std::to_string(p.pos[1]);}
             if (move_right <= 104) { p.possible_move[1] = 
-                std::to_string(move_right) + std::to_string(p.pos[1]);}
+                static_cast<char>(move_right) + std::to_string(p.pos[1]);}
             if (move_up >= 1) { p.possible_move[2] = 
                 p.pos[0] + std::to_string(move_up); }
             if (move_down >= 8) { p.possible_move[3] = 
@@ -256,7 +257,7 @@ class ChessGame {
         }
     }
     void print_possible_moves_for_player(ChessTeam& team) {
-        for (PieceInfo p : team.get_pieces()) {
+        for (PieceInfo& p : team.get_pieces()) {
             std::cout << team.get_piece_symbol(p.name) << " can move to: ";
             std::cout << p.possible_move[0] << ", " << p.possible_move[1] << ", ";
             std::cout << p.possible_move[2] << ", "  << p.possible_move[3];
