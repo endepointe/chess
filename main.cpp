@@ -28,7 +28,7 @@ enum Piece {KING,KNIGHT,BISHOP,ROOK};
 struct PieceInfo {
     Piece name;
     pos_t pos;
-    pos_t possible_moves[4];
+    pos_t possible_move[4];
 };
 
 class ChessTeam {
@@ -72,7 +72,7 @@ class ChessTeam {
     std::vector<PieceInfo>& get_pieces() {
         return pieces;
     }
-    piece_t get_piece(Piece p) {
+    piece_t get_piece_symbol(Piece p) {
         return piece_map[p];
     }
 
@@ -95,7 +95,7 @@ class ChessTeam {
     void take_piece(ChessTeam &other_team, Piece p) {
         std::cout << "Team: " << get_team();
         std::cout << " takes:" << other_team.get_team();
-        std::cout << "'s " << other_team.get_piece(p) << "\n";
+        std::cout << "'s " << other_team.get_piece_symbol(p) << "\n";
         other_team.get_pieces();
     }
 };
@@ -146,84 +146,84 @@ class ChessGame {
                         break;
                     case 1:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(ROOK),
+                                    player_one.get_piece_symbol(ROOK),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(5),loc);
                         break;
                     case 2:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(BISHOP),
+                                    player_one.get_piece_symbol(BISHOP),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(4),loc);
                         break;
                     case 3:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KNIGHT),
+                                    player_one.get_piece_symbol(KNIGHT),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(2),loc);
                         break;
                     case 4:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KNIGHT),
+                                    player_two.get_piece_symbol(KNIGHT),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(2),loc);
                         break;
                     case 5:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(BISHOP),
+                                    player_two.get_piece_symbol(BISHOP),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(4),loc);
                         break;
                     case 6:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(ROOK),
+                                    player_two.get_piece_symbol(ROOK),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(5),loc);
                         break;
                     case 7:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KING),
+                                    player_one.get_piece_symbol(KING),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(0),loc);
                         break;
                     case 8:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(BISHOP),
+                                    player_one.get_piece_symbol(BISHOP),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(3),loc);
                         break;
                     case 9:
                         board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece(KNIGHT),
+                                    player_one.get_piece_symbol(KNIGHT),
                                     player_one.get_team()));
                         player_one.set_piece_position(
                                 player_one.get_pieces().at(1),loc);
                         break;
                     case 10:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KNIGHT),
+                                    player_two.get_piece_symbol(KNIGHT),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(1),loc);
                         break;
                     case 11:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(BISHOP),
+                                    player_two.get_piece_symbol(BISHOP),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(3),loc);
                         break;
                     case 12:
                         board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece(KING),
+                                    player_two.get_piece_symbol(KING),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(0),loc);
@@ -238,20 +238,29 @@ class ChessGame {
     void update_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo p : team.get_pieces()) {
             std::cout << p.name << " "<< p.pos[0] << " " << p.pos[1] << "\n";
-            switch (p.name) {
-                case 0:
-                    if (static_cast<uint_t>(p.pos[0]) >= 97) {
-                    }
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                default:
-                    break;
-            }
+            uint_t move_left = p.pos[0] - 1;
+            uint_t move_right = p.pos[0] + 1;
+            uint_t move_up = p.pos[1] + 1;
+            uint_t move_down = p.pos[1] - 1;
+            std::cout << move_left << " KJKJk\n\n";
+            for (uint_t i = 0; i < 4; i++) {p.possible_move[i] = "";}
+            std::cout << "tewd: " << std::to_string(move_left) << "\n";
+            if (move_left >= 97) { p.possible_move[0] = 
+                std::to_string(move_left) + std::to_string(p.pos[1]);}
+            if (move_right <= 104) { p.possible_move[1] = 
+                std::to_string(move_right) + std::to_string(p.pos[1]);}
+            if (move_up >= 1) { p.possible_move[2] = 
+                p.pos[0] + std::to_string(move_up); }
+            if (move_down >= 8) { p.possible_move[3] = 
+                p.pos[0] + std::to_string(move_down); }
+        }
+    }
+    void print_possible_moves_for_player(ChessTeam& team) {
+        for (PieceInfo p : team.get_pieces()) {
+            std::cout << team.get_piece_symbol(p.name) << " can move to: ";
+            std::cout << p.possible_move[0] << ", " << p.possible_move[1] << ", ";
+            std::cout << p.possible_move[2] << ", "  << p.possible_move[3];
+            std::cout << "\n";
         }
     }
     void redraw_board() {
@@ -295,9 +304,10 @@ int main() {
         std::cout << p.name << " " << p.pos << "\n";
     }
     chess.update_possible_moves_for_player(p1);
+    chess.print_possible_moves_for_player(p1);
+
 
     p1.take_piece(p2, ROOK);
-    std::cout << 'h' - 1 << 'h' - 0;
 
     return 0;
 }
