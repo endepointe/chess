@@ -451,7 +451,7 @@ class ChessGame {
         for (size_t i = 0; i < 8; i++) {
             cout alpha8[i] << " ";
         }
-        cout "\n\n";
+        cout "\n\n\n";
         return board;
     }
 };
