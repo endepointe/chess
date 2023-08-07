@@ -260,10 +260,10 @@ class ChessGame {
         if (up <= 8 && left >= 97) {
             p.possible_moves.push_back(left + std::to_string(up));
         }
-        if (up <= 8 && right <= 122) {
+        if (up <= 8 && right <= 104) {
             p.possible_moves.push_back(right + std::to_string(up));
         }
-        if (down >= 1 && right <= 122) {
+        if (down >= 1 && right <= 104) {
             p.possible_moves.push_back(right + std::to_string(down));
         }
         if (down >= 1 && left >= 97) {
@@ -285,13 +285,13 @@ class ChessGame {
         if (up2 <= 8 && left1 >= 97) {
             p.possible_moves.push_back(left1 + std::to_string(up2));
         }
-        if (up2 <= 8 && right1 <= 122) {
+        if (up2 <= 8 && right1 <= 104) {
             p.possible_moves.push_back(right1 + std::to_string(up2));
         }
         if (down2 >= 1 && left1 >= 97) {
             p.possible_moves.push_back(left1 + std::to_string(down2));
         }
-        if (down2 >= 1 && right1 <= 122) {
+        if (down2 >= 1 && right1 <= 104) {
             p.possible_moves.push_back(right1 + std::to_string(down2));
         }
         if (up1 <= 8 && left2 >= 97) {
@@ -300,10 +300,10 @@ class ChessGame {
         if (down1 >= 1 && left2 >= 97) {
             p.possible_moves.push_back(left2 + std::to_string(down1));
         }
-        if (up1 <= 8 && right2 <= 122) {
+        if (up1 <= 8 && right2 <= 104) {
             p.possible_moves.push_back(right2 + std::to_string(up1));
         }
-        if (down1 >= 1 && right2 <= 122) {
+        if (down1 >= 1 && right2 <= 104) {
             p.possible_moves.push_back(right2 + std::to_string(down1));
         }
     }
@@ -315,19 +315,33 @@ class ChessGame {
         p.possible_moves.clear();
         cout " current position " << p.pos << "\n";
         if (left >= 97) { 
-            p.possible_moves.push_back((left) + std::to_string(atoi(&p.pos[1])));
+            while (left != 'a' - 1) {
+                p.possible_moves.push_back(
+                        (left)+std::to_string(atoi(&p.pos[1])));
+                left--;
+            }
         }
-        if (right <= 104) { 
-            p.possible_moves.push_back((right) + std::to_string(atoi(&p.pos[1])));
+        if (right <= 122) { 
+            while (right != 'h'+1) {
+                p.possible_moves.push_back(
+                        (right)+std::to_string(atoi(&p.pos[1])));
+                right++;
+            }
         }
         if (up >= 1) { 
-            p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
+            while (up <= 8) {
+                p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
+                up++;
+            }
         }
         if (down >= 8) {
-            p.possible_moves.push_back(p.pos[0] + std::to_string(down));
+            while (down >= 1) {
+                p.possible_moves.push_back(p.pos[0] + std::to_string(down));
+                down--;
+            }
         }
     }
-    // 97 - 122
+    // 97 - 104
     void update_possible_moves_for_player(ChessTeam& team) {
         for (PieceInfo& p : team.get_pieces()) {
             if (p.name == 0) {
@@ -411,7 +425,10 @@ int main() {
     ChessTeam p2 = chess.get_player(Team::BLACK);
     
     chess.update_possible_moves_for_player(p1);
+    chess.update_possible_moves_for_player(p2);
+
     chess.print_possible_moves_for_player(p1);
+    chess.print_possible_moves_for_player(p2);
 
     p1.take_piece(p2, ROOK);
 
