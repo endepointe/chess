@@ -423,7 +423,7 @@ class ChessGame {
     std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
         uint_t max = 0, lnum = 8;
         bool flip = true;
-        cout "   ";
+        cout "\n\n   ";
         for (size_t i = 0; i < 8; i++) {
             cout alpha8[i] << " ";
         }
