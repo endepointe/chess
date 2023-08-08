@@ -37,6 +37,10 @@ struct PieceInfo {
     pos_t pos;
     std::vector<pos_t> possible_moves;
 };
+struct BoardItem {
+    pos_t pos;
+    PieceInfo* piece;
+}
 
 class ChessTeam {
     private:
@@ -454,7 +458,7 @@ class ChessGame {
             cout "\n";
         }
     }
-    // branch a 
+
     std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
         uint_t max = 0, lnum = 8;
         bool flip = true;
@@ -507,7 +511,7 @@ int main() {
 
     p1.take_piece(p2, ROOK);
     p1.move_piece("a2","b2");
-    p1.move_piece("a2", "c3");
+    p1.move_piece("a2", "c2");
     p2.move_piece("f2","h1");
 
 
