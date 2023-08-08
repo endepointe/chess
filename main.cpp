@@ -18,7 +18,9 @@
 #define BISHOP_BLACK    "\u265D"
 #define BOX             "\x1b[48;5;232m"
 #define COLOR_RESET     "\x1b[0m"
-#define cout             std::cout<<
+#define cout            std::cout<<
+#define nl              "\n"
+#define endl            <<nl
 
 using piece_t = std::string; 
 using pos_t = std::string;
@@ -42,8 +44,9 @@ class ChessTeam {
         {Team::BLACK, "BLACK"}
     };
     std::map<Piece, team_t> piece_map;
+    std::map<std::string, std::string> piece
     std::string team;
-    std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
+    //std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
     std::vector<PieceInfo> pieces = {
         PieceInfo{KING,"",{""}},PieceInfo{KNIGHT,"",{""}},
         PieceInfo{KNIGHT,"",{""}},PieceInfo{BISHOP,"",{""}},
@@ -95,8 +98,19 @@ class ChessTeam {
                 return piece_map[p.name];
             }
         }
-        return "*";
+        return "";
     }
+
+    void move_piece(pos_t curr_pos, pos_t next_pos) {
+        for (PieceInfo& p : pieces) {
+            if (p.pos == curr_pos) {
+                // check if next_pos is open
+                cout get_piece_at_position(next_pos).size();
+                cout get_piece_at_position(next_pos) endl;
+            }
+        }
+    }
+
     void take_piece(ChessTeam &other_team, Piece p) {
         cout "Team: " << get_team();
         cout " takes:" << other_team.get_team();
@@ -238,9 +252,6 @@ class ChessGame {
                 }
             }
         }
-    }
-    void move_piece(Team team, PieceInfo& p) {
-        cout team << " " << p.pos << " \n";
     }
 
     void update_moves_for_king(PieceInfo& p) {
@@ -475,6 +486,7 @@ int main() {
     chess.print_possible_moves_for_player(p2);
 
     p1.take_piece(p2, ROOK);
+    p1.move_piece("a2","b2");
 
     return 0;
 }
