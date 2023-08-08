@@ -25,6 +25,7 @@
 using piece_t = std::string; 
 using pos_t = std::string;
 using team_t = std::string;
+using name_t = std::string;
 using uint_t = unsigned int;
 // idk if ill need this
 /*
@@ -50,19 +51,18 @@ class ChessTeam {
         {Team::WHITE, "WHITE"},
         {Team::BLACK, "BLACK"}
     };
-    std::map<Piece, team_t> piece_map;
+    std::map<Piece, team_t> symbol_map;
+    std::map<Piece, name_t> name_map;
     std::string team;
     std::vector<PieceInfo> pieces;
-    /*{
-        PieceInfo{"",KING,"",{""}},PieceInfo{"",KNIGHT,"",{""}},
-        PieceInfo{"",KNIGHT,"",{""}},PieceInfo{"",BISHOP,"",{""}},
-        PieceInfo{"",BISHOP,"",{""}},PieceInfo{"",ROOK,"",{""}},
-    };
-    */
+
     public:
     ChessTeam(Team t) : team(team_map[t]) {
+        name_map = {
+            {KING,"KING"},{KNIGHT,"KNIGHT"},{BISHOP,"BISHOP"},{ROOK,"ROOK"}
+        };
         if (team == "WHITE") {
-            piece_map = {
+            symbol_map = {
                 {Piece::KING, KING_WHITE},
                 {Piece::KNIGHT, KNIGHT_WHITE},
                 {Piece::ROOK, ROOK_WHITE},
@@ -78,7 +78,7 @@ class ChessTeam {
             };
 
         } else {
-            piece_map = {
+            symbol_map = {
                 {Piece::KING, KING_BLACK},
                 {Piece::KNIGHT, KNIGHT_BLACK},
                 {Piece::ROOK, ROOK_BLACK},
@@ -104,7 +104,7 @@ class ChessTeam {
     }
 
     piece_t get_piece_symbol(Piece p) {
-        return piece_map[p];
+        return symbol_map[p];
     }
 
 
@@ -132,7 +132,8 @@ class ChessTeam {
                 // check if next_pos is open
                 piece_ptr = get_piece_at_position(next_pos);
                 cout piece_ptr->pos << " contains ";
-                cout team_map[piece_ptr->team] << " " endl;
+                cout team_map[piece_ptr->team] << " team's ";
+                cout name_map[piece_ptr->name] endl;
             }
         }
     }
@@ -513,7 +514,7 @@ int main() {
 
     p1.take_piece(p2, ROOK);
     p1.move_piece("a2","b2");
-    p1.move_piece("a2","f2");
+    p2.move_piece("f2","h1");
 
 
     return 0;
