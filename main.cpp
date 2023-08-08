@@ -132,7 +132,7 @@ class ChessTeam {
                 // check if next_pos is open
                 piece_ptr = get_piece_at_position(next_pos);
                 cout piece_ptr->pos << " contains ";
-                cout team_map[piece_ptr->team] << " Race stinks " endl;
+                cout team_map[piece_ptr->team] << " " endl;
             }
         }
     }
@@ -513,6 +513,8 @@ int main() {
 
     p1.take_piece(p2, ROOK);
     p1.move_piece("a2","b2");
+    p1.move_piece("a2","f2");
+
 
     return 0;
 }
