@@ -147,7 +147,7 @@ class ChessGame {
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
                 switch (starting_location[loc]) {
                     case 0:
-                        board.push_back(std::make_tuple(loc, "*",""));
+                        board.push_back(std::make_tuple(loc, " ",""));
                         break;
                     case 1:
                         board.push_back(std::make_tuple(loc, 
