@@ -454,7 +454,7 @@ class ChessGame {
             cout "\n";
         }
     }
-    
+    // branch a 
     std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
         uint_t max = 0, lnum = 8;
         bool flip = true;
