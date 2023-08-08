@@ -44,7 +44,12 @@ class ChessTeam {
         {Team::BLACK, "BLACK"}
     };
     std::map<Piece, team_t> piece_map;
-    std::map<std::string, std::string> piece
+    std::map<std::string, std::string> piece_name = {
+        {KING_BLACK, "KING_BLACK"},{KING_WHITE,"KING_WHITE"},
+        {KNIGHT_BLACK,"KNIGHT_BLACK"},{KNIGHT_WHITE,"KNIGHT_WHITE"},
+        {BISHOP_BLACK,"BISHOP_BLACK"},{BISHOP_WHITE,"BISHOP_WHITE"},
+        {ROOK_BLACK,"ROOK_BLACK"},{ROOK_WHITE,"ROOK_WHITE"}
+    };
     std::string team;
     //std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
     std::vector<PieceInfo> pieces = {
@@ -91,22 +96,20 @@ class ChessTeam {
     pos_t get_piece_position(PieceInfo& p) {
         return p.pos;
     }
-    // this should be a fn for ChessGame
-    piece_t get_piece_at_position(pos_t pos){
-        for (PieceInfo p : pieces){
+
+    PieceInfo& get_piece_at_position(pos_t pos){
+        for (PieceInfo& p : pieces){
             if (p.pos == pos) {
-                return piece_map[p.name];
+                return p;
             }
         }
-        return "";
     }
 
     void move_piece(pos_t curr_pos, pos_t next_pos) {
         for (PieceInfo& p : pieces) {
             if (p.pos == curr_pos) {
                 // check if next_pos is open
-                cout get_piece_at_position(next_pos).size();
-                cout get_piece_at_position(next_pos) endl;
+                cout get_piece_at_position(next_pos).pos;
             }
         }
     }
