@@ -26,16 +26,23 @@ using piece_t = std::string;
 using pos_t = std::string;
 using team_t = std::string;
 using uint_t = unsigned int;
-
-
+// idk if ill need this
+/*
+enum Pieces {
+    KING_WHITE,KNIGHT_WHITE,BISHOP_WHITE,ROOK_WHITE,
+    KING_BLACK,KNIGHT_BLACK,BISHOP_BLACK,ROOK_BLACKE,
+};
+*/
 enum State {UNFINISHED, WHITE_WON, BLACK_WON};
 enum Team {WHITE, BLACK};
 enum Piece {KING,KNIGHT,BISHOP,ROOK};
 struct PieceInfo {
+    Team team;
     Piece name;
     pos_t pos;
     std::vector<pos_t> possible_moves;
 };
+
 
 class ChessTeam {
     private:
@@ -44,20 +51,14 @@ class ChessTeam {
         {Team::BLACK, "BLACK"}
     };
     std::map<Piece, team_t> piece_map;
-    std::map<std::string, std::string> piece_name = {
-        {KING_BLACK, "KING_BLACK"},{KING_WHITE,"KING_WHITE"},
-        {KNIGHT_BLACK,"KNIGHT_BLACK"},{KNIGHT_WHITE,"KNIGHT_WHITE"},
-        {BISHOP_BLACK,"BISHOP_BLACK"},{BISHOP_WHITE,"BISHOP_WHITE"},
-        {ROOK_BLACK,"ROOK_BLACK"},{ROOK_WHITE,"ROOK_WHITE"}
-    };
     std::string team;
-    //std::vector<Piece> piece_names = {KING,KNIGHT,KNIGHT,BISHOP,BISHOP,ROOK};
-    std::vector<PieceInfo> pieces = {
-        PieceInfo{KING,"",{""}},PieceInfo{KNIGHT,"",{""}},
-        PieceInfo{KNIGHT,"",{""}},PieceInfo{BISHOP,"",{""}},
-        PieceInfo{BISHOP,"",{""}},PieceInfo{ROOK,"",{""}},
+    std::vector<PieceInfo> pieces;
+    /*{
+        PieceInfo{"",KING,"",{""}},PieceInfo{"",KNIGHT,"",{""}},
+        PieceInfo{"",KNIGHT,"",{""}},PieceInfo{"",BISHOP,"",{""}},
+        PieceInfo{"",BISHOP,"",{""}},PieceInfo{"",ROOK,"",{""}},
     };
-
+    */
     public:
     ChessTeam(Team t) : team(team_map[t]) {
         if (team == "WHITE") {
@@ -67,12 +68,29 @@ class ChessTeam {
                 {Piece::ROOK, ROOK_WHITE},
                 {Piece::BISHOP, BISHOP_WHITE}
             };
+            pieces = {
+                PieceInfo{Team::WHITE,KING,"",{""}},
+                PieceInfo{Team::WHITE,KNIGHT,"",{""}},
+                PieceInfo{Team::WHITE,KNIGHT,"",{""}},
+                PieceInfo{Team::WHITE,BISHOP,"",{""}},
+                PieceInfo{Team::WHITE,BISHOP,"",{""}},
+                PieceInfo{Team::WHITE,ROOK,"",{""}}
+            };
+
         } else {
             piece_map = {
                 {Piece::KING, KING_BLACK},
                 {Piece::KNIGHT, KNIGHT_BLACK},
                 {Piece::ROOK, ROOK_BLACK},
                 {Piece::BISHOP, BISHOP_BLACK}
+            };
+            pieces = {
+                PieceInfo{Team::BLACK,KING,"",{""}},
+                PieceInfo{Team::BLACK,KNIGHT,"",{""}},
+                PieceInfo{Team::BLACK,KNIGHT,"",{""}},
+                PieceInfo{Team::BLACK,BISHOP,"",{""}},
+                PieceInfo{Team::BLACK,BISHOP,"",{""}},
+                PieceInfo{Team::BLACK,ROOK,"",{""}}
             };
         }
     } 
@@ -89,6 +107,7 @@ class ChessTeam {
         return piece_map[p];
     }
 
+
     void set_piece_position(PieceInfo& p, pos_t pos) {
         p.pos = pos;
     }
@@ -97,19 +116,23 @@ class ChessTeam {
         return p.pos;
     }
 
-    PieceInfo& get_piece_at_position(pos_t pos){
+    PieceInfo* get_piece_at_position(pos_t pos){
         for (PieceInfo& p : pieces){
             if (p.pos == pos) {
-                return p;
+                return &p;
             }
         }
+        return nullptr;
     }
 
     void move_piece(pos_t curr_pos, pos_t next_pos) {
+        PieceInfo* piece_ptr = nullptr;
         for (PieceInfo& p : pieces) {
             if (p.pos == curr_pos) {
                 // check if next_pos is open
-                cout get_piece_at_position(next_pos).pos;
+                piece_ptr = get_piece_at_position(next_pos);
+                cout piece_ptr->pos << " contains ";
+                cout team_map[piece_ptr->team] << " Race stinks " endl;
             }
         }
     }
