@@ -27,6 +27,7 @@ using pos_t = std::string;
 using team_t = std::string;
 using name_t = std::string;
 using uint_t = unsigned int;
+std::string nbs = " ";
 
 enum State {UNFINISHED, WHITE_WON, BLACK_WON};
 enum Team {WHITE, BLACK};
@@ -107,8 +108,8 @@ class ChessTeam {
     }
 
 
-    void set_piece_position(PieceInfo& p, pos_t pos) {
-        p.pos = pos;
+    void set_piece_position(PieceInfo* p, pos_t pos) {
+        p->pos = pos;
     }
 
     pos_t get_piece_position(PieceInfo& p) {
@@ -186,26 +187,28 @@ class ChessGame {
             for (uint_t col = 0; col < size; col++) {
                 BoardItem item;
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
+                item.pos = loc;
                 switch (starting_location[loc]) {
                     case 0:
-                        item.pos = loc; item.piece = nullptr;
+                        item.piece = nullptr;
                         board.push_back(item);
                         break;
-                    /*
                     case 1:
-                        item.pos = loc;
-                        item->piece = &player_one.get_pieces().at(5);
-                        player_one.set_piece_position(item->piece,loc);
+                        item.piece = &player_one.get_pieces().at(5);
+                        player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
                         break;
                     case 2:
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(BISHOP),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(4),loc);
+                        item.piece = &player_one.get_pieces().at(4);
+                        player_one.set_piece_position(item.piece,loc);
+                        board.push_back(item);
                         break;
                     case 3:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_one.get_piece_symbol(KNIGHT),
                                     player_one.get_team()));
@@ -213,6 +216,11 @@ class ChessGame {
                                 player_one.get_pieces().at(2),loc);
                         break;
                     case 4:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(KNIGHT),
                                     player_two.get_team()));
@@ -220,6 +228,11 @@ class ChessGame {
                                 player_two.get_pieces().at(2),loc);
                         break;
                     case 5:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(BISHOP),
                                     player_two.get_team()));
@@ -227,6 +240,11 @@ class ChessGame {
                                 player_two.get_pieces().at(4),loc);
                         break;
                     case 6:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(ROOK),
                                     player_two.get_team()));
@@ -234,6 +252,11 @@ class ChessGame {
                                 player_two.get_pieces().at(5),loc);
                         break;
                     case 7:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_one.get_piece_symbol(KING),
                                     player_one.get_team()));
@@ -241,6 +264,11 @@ class ChessGame {
                                 player_one.get_pieces().at(0),loc);
                         break;
                     case 8:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_one.get_piece_symbol(BISHOP),
                                     player_one.get_team()));
@@ -248,6 +276,11 @@ class ChessGame {
                                 player_one.get_pieces().at(3),loc);
                         break;
                     case 9:
+                         item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+                       
                         board.push_back(std::make_tuple(loc, 
                                     player_one.get_piece_symbol(KNIGHT),
                                     player_one.get_team()));
@@ -255,6 +288,11 @@ class ChessGame {
                                 player_one.get_pieces().at(1),loc);
                         break;
                     case 10:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(KNIGHT),
                                     player_two.get_team()));
@@ -262,6 +300,11 @@ class ChessGame {
                                 player_two.get_pieces().at(1),loc);
                         break;
                     case 11:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(BISHOP),
                                     player_two.get_team()));
@@ -269,13 +312,17 @@ class ChessGame {
                                 player_two.get_pieces().at(3),loc);
                         break;
                     case 12:
+                        item.piece = &player_.get_pieces().at(4);
+                        player_.set_piece_position(item.piece,loc);
+                        board.push_back(item);
+
+
                         board.push_back(std::make_tuple(loc, 
                                     player_two.get_piece_symbol(KING),
                                     player_two.get_team()));
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(0),loc);
                         break;
-                    */
                     default:
                         break;
                 }
@@ -468,11 +515,13 @@ class ChessGame {
             cout alpha8[i] << " ";
         }
         cout " \n\t " << lnum << " ";
-        for (BoardItem& n : board) {
+        for (BoardItem& item : board) {
+            piece_t value;
+            value = (!item.piece ? " " : item.piece->symbol);
             if (!flip) {
-                cout BOX << n.piece->symbol << " " << COLOR_RESET;
+                cout BOX << value << " " << COLOR_RESET;
             } else {
-                cout n.piece->symbol << " ";
+                cout value << " ";
             }
             flip = !flip;
             if (max == 7) {
@@ -500,6 +549,7 @@ int main() {
     ChessGame chess = ChessGame();
     chess.set_board();
     chess.print_board();
+    /*
 
     ChessTeam p1 = chess.get_player(Team::WHITE);
     ChessTeam p2 = chess.get_player(Team::BLACK);
@@ -514,6 +564,7 @@ int main() {
     p1.move_piece("a2","b2");
     p1.move_piece("a2", "c2");
     p2.move_piece("f2","h1");
+    */
 
 
     return 0;
