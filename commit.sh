@@ -1,2 +1,2 @@
 #!/usr/bin/bash
-git add -A && git commit -m ssdd && git push origin main
+git add -A && git commit -m $1 && git push origin $2 
