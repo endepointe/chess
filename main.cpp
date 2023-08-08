@@ -120,8 +120,8 @@ class ChessGame {
         {"a1",7},{"b1",8},{"c1",9},{"f1",10},{"g1",11},{"h1",12},
     };
     char alpha8[8] = {'a','b','c','d','e','f','g','h'};
-    unsigned int num8[8] = {1,2,3,4,5,6,7,8};
-    unsigned int size = 8;
+    uint_t num8[8] = {1,2,3,4,5,6,7,8};
+    uint_t size = 8;
     ChessTeam player_one = ChessTeam(Team::WHITE);
     ChessTeam player_two = ChessTeam(Team::BLACK);
 
@@ -134,7 +134,7 @@ class ChessGame {
     void set_game_state(State s) {
         state = state_map[s];
     }
-    ChessTeam get_player(Team t) {
+    ChessTeam& get_player(Team t) {
         if (t == 0) {
             return player_one;
         }
@@ -239,6 +239,10 @@ class ChessGame {
             }
         }
     }
+    void move_piece(Team team, PieceInfo& p) {
+        cout team << " " << p.pos << " \n";
+    }
+
     void update_moves_for_king(PieceInfo& p) {
         char left = p.pos[0] - 1;
         char right = p.pos[0] + 1;
