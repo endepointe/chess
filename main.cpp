@@ -27,13 +27,7 @@ using pos_t = std::string;
 using team_t = std::string;
 using name_t = std::string;
 using uint_t = unsigned int;
-// idk if ill need this
-/*
-enum Pieces {
-    KING_WHITE,KNIGHT_WHITE,BISHOP_WHITE,ROOK_WHITE,
-    KING_BLACK,KNIGHT_BLACK,BISHOP_BLACK,ROOK_BLACKE,
-};
-*/
+
 enum State {UNFINISHED, WHITE_WON, BLACK_WON};
 enum Team {WHITE, BLACK};
 enum Piece {KING,KNIGHT,BISHOP,ROOK};
@@ -43,7 +37,6 @@ struct PieceInfo {
     pos_t pos;
     std::vector<pos_t> possible_moves;
 };
-
 
 class ChessTeam {
     private:
@@ -514,6 +507,7 @@ int main() {
 
     p1.take_piece(p2, ROOK);
     p1.move_piece("a2","b2");
+    p1.move_piece("a2", "c3");
     p2.move_piece("f2","h1");
 
 
