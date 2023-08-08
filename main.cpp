@@ -34,13 +34,14 @@ enum Piece {KING,KNIGHT,BISHOP,ROOK};
 struct PieceInfo {
     Team team;
     Piece name;
+    piece_t symbol;
     pos_t pos;
     std::vector<pos_t> possible_moves;
 };
 struct BoardItem {
     pos_t pos;
     PieceInfo* piece;
-}
+};
 
 class ChessTeam {
     private:
@@ -65,13 +66,14 @@ class ChessTeam {
                 {Piece::ROOK, ROOK_WHITE},
                 {Piece::BISHOP, BISHOP_WHITE}
             };
+            // team, name, symbol, position, possible moves
             pieces = {
-                PieceInfo{Team::WHITE,KING,"",{""}},
-                PieceInfo{Team::WHITE,KNIGHT,"",{""}},
-                PieceInfo{Team::WHITE,KNIGHT,"",{""}},
-                PieceInfo{Team::WHITE,BISHOP,"",{""}},
-                PieceInfo{Team::WHITE,BISHOP,"",{""}},
-                PieceInfo{Team::WHITE,ROOK,"",{""}}
+                PieceInfo{Team::WHITE,KING,KING_WHITE,"",{""}},
+                PieceInfo{Team::WHITE,KNIGHT,KNIGHT_WHITE,"",{""}},
+                PieceInfo{Team::WHITE,KNIGHT,KNIGHT_WHITE,"",{""}},
+                PieceInfo{Team::WHITE,BISHOP,BISHOP_WHITE,"",{""}},
+                PieceInfo{Team::WHITE,BISHOP,BISHOP_WHITE,"",{""}},
+                PieceInfo{Team::WHITE,ROOK,ROOK_WHITE,"",{""}}
             };
 
         } else {
@@ -82,12 +84,12 @@ class ChessTeam {
                 {Piece::BISHOP, BISHOP_BLACK}
             };
             pieces = {
-                PieceInfo{Team::BLACK,KING,"",{""}},
-                PieceInfo{Team::BLACK,KNIGHT,"",{""}},
-                PieceInfo{Team::BLACK,KNIGHT,"",{""}},
-                PieceInfo{Team::BLACK,BISHOP,"",{""}},
-                PieceInfo{Team::BLACK,BISHOP,"",{""}},
-                PieceInfo{Team::BLACK,ROOK,"",{""}}
+                PieceInfo{Team::BLACK,KING,KING_BLACK,"",{""}},
+                PieceInfo{Team::BLACK,KNIGHT,KNIGHT_BLACK,"",{""}},
+                PieceInfo{Team::BLACK,KNIGHT,KNIGHT_BLACK,"",{""}},
+                PieceInfo{Team::BLACK,BISHOP,BISHOP_BLACK,"",{""}},
+                PieceInfo{Team::BLACK,BISHOP,BISHOP_BLACK,"",{""}},
+                PieceInfo{Team::BLACK,ROOK,ROOK_BLACK,"",{""}}
             };
         }
     } 
@@ -151,7 +153,7 @@ class ChessGame {
         {State::BLACK_WON, "BLACK_WON"}
     };
     std::string state;
-    std::vector<std::tuple<pos_t, piece_t, team_t>> board;
+    std::vector<BoardItem> board;
     std::map<pos_t, unsigned int> starting_location = {
         {" ",0},
         {"a2",1},{"b2",2},{"c2",3},{"f2",4},{"g2",5},{"h2",6},
@@ -182,17 +184,19 @@ class ChessGame {
     void set_board() {
         for (int row = size - 1; row >= 0; row--) {
             for (uint_t col = 0; col < size; col++) {
+                BoardItem item;
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
                 switch (starting_location[loc]) {
                     case 0:
-                        board.push_back(std::make_tuple(loc, " ",""));
+                        item.pos = loc; item.piece = nullptr;
+                        board.push_back(item);
                         break;
+                    /*
                     case 1:
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(ROOK),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(5),loc);
+                        item.pos = loc;
+                        item->piece = &player_one.get_pieces().at(5);
+                        player_one.set_piece_position(item->piece,loc);
+                        board.push_back(item);
                         break;
                     case 2:
                         board.push_back(std::make_tuple(loc, 
@@ -271,6 +275,7 @@ class ChessGame {
                         player_two.set_piece_position(
                                 player_two.get_pieces().at(0),loc);
                         break;
+                    */
                     default:
                         break;
                 }
@@ -453,13 +458,9 @@ class ChessGame {
         cout "\n";
     }
     void redraw_board() {
-        for (std::tuple<pos_t, piece_t, team_t> n : board) {
-            cout std::get<0>(n)<<" "<<std::get<1>(n)<<" "<<std::get<2>(n);
-            cout "\n";
-        }
     }
 
-    std::vector<std::tuple<pos_t, piece_t, team_t>> print_board() {
+    std::vector<BoardItem> print_board() {
         uint_t max = 0, lnum = 8;
         bool flip = true;
         cout "\n\n\t   ";
@@ -467,11 +468,11 @@ class ChessGame {
             cout alpha8[i] << " ";
         }
         cout " \n\t " << lnum << " ";
-        for (std::tuple<pos_t, piece_t, team_t> n : board) {
+        for (BoardItem& n : board) {
             if (!flip) {
-                cout BOX << std::get<1>(n) << " " << COLOR_RESET;
+                cout BOX << n.piece->symbol << " " << COLOR_RESET;
             } else {
-                cout std::get<1>(n) << " ";
+                cout n.piece->symbol << " ";
             }
             flip = !flip;
             if (max == 7) {
