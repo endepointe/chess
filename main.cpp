@@ -204,124 +204,54 @@ class ChessGame {
                         board.push_back(item);
                         break;
                     case 3:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_one.get_pieces().at(2);
+                        player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(KNIGHT),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(2),loc);
                         break;
                     case 4:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(2);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(KNIGHT),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(2),loc);
                         break;
                     case 5:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(4);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(BISHOP),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(4),loc);
                         break;
                     case 6:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(5);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(ROOK),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(5),loc);
                         break;
                     case 7:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_one.get_pieces().at(0);
+                        player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(KING),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(0),loc);
                         break;
                     case 8:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_one.get_pieces().at(3);
+                        player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(BISHOP),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(3),loc);
                         break;
                     case 9:
-                         item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_one.get_pieces().at(1);
+                        player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-                       
-                        board.push_back(std::make_tuple(loc, 
-                                    player_one.get_piece_symbol(KNIGHT),
-                                    player_one.get_team()));
-                        player_one.set_piece_position(
-                                player_one.get_pieces().at(1),loc);
                         break;
                     case 10:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(1);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(KNIGHT),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(1),loc);
                         break;
                     case 11:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(3);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(BISHOP),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(3),loc);
                         break;
                     case 12:
-                        item.piece = &player_.get_pieces().at(4);
-                        player_.set_piece_position(item.piece,loc);
+                        item.piece = &player_two.get_pieces().at(0);
+                        player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
-
-
-                        board.push_back(std::make_tuple(loc, 
-                                    player_two.get_piece_symbol(KING),
-                                    player_two.get_team()));
-                        player_two.set_piece_position(
-                                player_two.get_pieces().at(0),loc);
                         break;
                     default:
                         break;
