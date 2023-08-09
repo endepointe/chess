@@ -6,6 +6,7 @@
 #include <vector>
 #include <tuple>
 #include <map>
+#include <cassert>
 
 #define KING_WHITE      "\u2654" 
 #define ROOK_WHITE      "\u2656"
@@ -145,7 +146,6 @@ class ChessGame {
         {State::BLACK_WON, "BLACK_WON"}
     };
     std::string state;
-    bool turn;
     std::vector<BoardItem> board;
     std::map<pos_t, unsigned int> starting_location = {
         {" ",0},
@@ -161,7 +161,6 @@ class ChessGame {
     public:
     ChessGame() {
         state = state_map[State::UNFINISHED];
-        turn = true;
     };
     ~ChessGame() {};
     std::string get_game_state() {return state;}
@@ -255,88 +254,7 @@ class ChessGame {
             }
         }
     }
-   
-    // PieceInfo
-    /*
-    Team team;
-    Piece name;
-    piece_t symbol;
-    pos_t pos;
-    std::vector<pos_t> possible_moves;
-    */
-    BoardItem* find_board_item(pos_t pos) {
-        for (BoardItem& item : board) {
-            if (item.pos == pos) {
-                return &item;
-            }
-        }
-        return nullptr;
-    }
-    bool path_clear(pos_t curr, pos_t next) {
-        bool clear = false;
-        for (BoardItem& item : board) {
-            if (item.piece && item.piece->pos == curr) {
-                cout "possible moves found at pos " << item.piece->pos;
-                cout " for " << item.piece->symbol << ": ";
-                for (pos_t pos : item.piece->possible_moves) {
-                    cout pos << " ";
-                    if (next != pos) {
-                        clear = false;
-                        break;
-                    }
-                }
-                clear = true;
-                break;
-            }
-        }
-        cout nl;
-        return clear; 
-    }
 
-    bool valid_move(PieceInfo* piece, pos_t move) {
-        bool found = false;
-        for (pos_t& pos : piece->possible_moves) {
-            if (pos == move) {
-                // if not a knight, check for pieces in path to move
-                if (piece->name != 1) {
-                    path_clear(piece->pos, move);
-                }
-                found = true;
-                break;
-            }
-        }
-        cout " " endl;
-        return found;
-    }
-
-    // returns 0 on successful move, < 0 if piece not found
-    int move_piece(pos_t curr_pos, pos_t next_pos) {
-        int ret = -1;
-        if (turn) {
-            update_possible_moves_for_player(player_one);
-            BoardItem* item = find_board_item(curr_pos);
-            BoardItem* next = find_board_item(next_pos);
-            if (item && next && valid_move(item->piece, next_pos)) {
-                cout "move piece: " << get_piece_name(player_one,
-                                                        item->piece->name);
-                cout " " << item->piece->symbol;
-                cout " at pos " << item->pos endl;
-                if (next->piece && next->piece->team != item->piece->team) {
-                    // take piece req
-                    cout " take piece " << next->piece->symbol << " at ";
-                    cout next->piece->pos endl;
-                } else {
-                }
-                ret = 0; 
-            } else { ret = -1; }
-        }
-        if (!turn) {
-            cout "\tfind player two piece at pos " << curr_pos endl;
-            ret = -1;
-        }
-        turn = !turn;
-        return ret;
-    }
 
     void update_moves_for_king(PieceInfo& p) {
         char left = p.pos[0] - 1;
@@ -551,17 +469,106 @@ class ChessGame {
         cout "\n\n\n";
         return board;
     }
+   
+    // PieceInfo
+    /*
+    Team team;
+    Piece name;
+    piece_t symbol;
+    pos_t pos;
+    std::vector<pos_t> possible_moves;
+    */
+    BoardItem* find_board_item(pos_t pos) {
+        for (BoardItem& item : board) {
+            if (item.pos == pos) {
+                return &item;
+            }
+        }
+        return nullptr;
+    }
+
+    bool path_clear(PieceInfo* curr, pos_t next) {
+        bool clear = false;
+        cout "possible moves found at pos " << curr->pos;
+        cout " for " << curr->symbol << ": ";
+        cout nl;
+        cout "Checking that the path is clear...\n";
+        /*
+        for (BoardItem& b : board) {
+            cout b.pos << " ";
+        }
+        */
+        if (curr->pos[0] < next[0]) {
+            // move left
+            if (curr->pos[1] < next[1]) {
+                // index < index of curr position on board
+            }
+            if (curr->pos[1] >= next[1]) {
+                // index < index of curr position on board
+            }
+        } 
+        if (curr->pos[0] > next[0]) {
+            // move right
+        }
+        cout nl;
+        return clear; 
+    }
+
+    bool potential_move(PieceInfo* piece, pos_t move) {
+        bool found = false;
+        for (pos_t& pos : piece->possible_moves) {
+            if (pos == move) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+    // returns 0 on successful move, < 0 if piece not found
+    int move_piece(Team team, pos_t curr_pos, pos_t next_pos) {
+        int ret = -1;
+        if (team == Team::WHITE) {
+            update_possible_moves_for_player(player_one);
+            BoardItem* item = find_board_item(curr_pos);
+            BoardItem* next = find_board_item(next_pos);
+            assert(item != nullptr);
+            assert(next != nullptr);
+            if (item && next && potential_move(item->piece, next_pos)) {
+                cout "try to move piece: " << get_piece_name(player_one,
+                                                        item->piece->name);
+                cout " " << item->piece->symbol;
+                cout " at pos " << item->pos endl;
+                path_clear(item->piece, next_pos);
+                if (next->piece && next->piece->team != team) {
+                    // take piece req
+                    cout " take piece " << next->piece->symbol << " at ";
+                    cout next->piece->pos endl;
+                }
+                ret = 0; 
+            } else {ret = -1;}
+        }
+        if (team == Team::BLACK) {
+            cout "\tfind player two piece at pos " << curr_pos endl;
+        }
+        return ret;
+    }
 };
 
 int main() {
     ChessGame chess = ChessGame();
     chess.set_board();
     chess.print_board();
-
+    /*
     chess.move_piece("a2","a4");
     chess.move_piece("f2","d3");
     chess.move_piece("a2","f2");
     chess.move_piece("f1","d2");
-    chess.move_piece("a2","d2");// invalid move
-   return 0;
+    */
+    chess.move_piece(Team::WHITE,"a2","d2");// invalid move
+    chess.move_piece(Team::WHITE,"a2","a3");// valid move
+    chess.move_piece(Team::BLACK,"f2","d3");// valid move
+    chess.move_piece(Team::BLACK,"f2","h2");// invalid move
+    //chess.move_piece("b1","d3");// invalid move
+    return 0;
 }
