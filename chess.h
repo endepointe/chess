@@ -536,7 +536,7 @@ class ChessGame {
             while (i >= j && clear) {
                 for (pos_t ppos : curr->piece->possible_moves) {
                     if (ppos == board.at(j).pos && board.at(i).piece) {
-                        cout "\t" << board.at(j).pos << " ";
+                        cout "\t"<<board.at(i).pos <<" "<< board.at(j).pos << " ";
                         if (board.at(i).piece) {
                             cout  "--" << board.at(i).pos;
                             cout " " << board.at(i).piece->symbol << " ";
