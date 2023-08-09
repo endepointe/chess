@@ -41,6 +41,7 @@ struct PieceInfo {
     std::vector<pos_t> possible_moves;
 };
 struct BoardItem {
+    int index;
     pos_t pos;
     PieceInfo* piece;
 };
@@ -178,11 +179,12 @@ class ChessGame {
     }
 
     void set_board() {
+        int i = 0;
         for (int row = size - 1; row >= 0; row--) {
             for (uint_t col = 0; col < size; col++) {
                 BoardItem item;
                 std::string loc = alpha8[col] + std::to_string(num8[row]);
-                item.pos = loc;
+                item.pos = loc; item.index = i++; 
                 switch (starting_location[loc]) {
                     case 0:
                         item.piece = nullptr;
@@ -487,46 +489,27 @@ class ChessGame {
         return nullptr;
     }
 
-    bool path_clear(PieceInfo* curr, pos_t next) {
+    bool path_clear(BoardItem* curr, BoardItem* next) {
         bool clear = false;
-        int distance = 0;
-        cout "possible moves found at pos " << curr->pos;
-        cout " for " << curr->symbol << " to " << next;
+        cout "\tpossible moves found at pos " << curr->piece->pos;
+        cout " for " << curr->piece->symbol;
         cout nl;
-        cout "Checking that the path is clear...\n";
-        /*
-        for (BoardItem& b : board) {
-            cout b.pos << " ";
-        }
-        */
-        if (curr->pos[0] < next[0]) {
-            distance += next[0] - curr->pos[0];
-        } 
-        if (curr->pos[0] > next[0]) {
-            distance += curr->pos[0] - next[0] ;
-        }
-        if (curr->pos[1] < next[1]) {
-            distance += next[1] - curr->pos[1];
-        }
-        if (curr->pos[1] > next[1]) {
-            distance += curr->pos[1] - next[1];
-        }
-        cout distance; 
+        cout "\tChecking that the path is clear...\n";
+        int i = (63-curr->index);
+        int j = 63-(63-next->index);
+        cout "\tboard item at index: " << (next->index) << " " << board.at(j).pos;
         cout nl;
         return clear; 
     }
 
     bool potential_move(PieceInfo* piece, pos_t move) {
         bool found = false;
-        cout piece->name << " position: " << piece->pos << " " << move endl;
         for (pos_t& pos : piece->possible_moves) {
             if (pos == move) {
-                cout pos << " ";
                 found = true;
-                //break;
+                break;
             }
         }
-        cout nl;
         return found;
     }
 
@@ -544,8 +527,8 @@ class ChessGame {
                 cout "try to move piece: " << get_piece_name(player_one,
                                                         item->piece->name);
                 cout " " << item->piece->symbol;
-                cout " at pos " << item->pos endl;
-                path_clear(item->piece, next_pos);
+                cout " at pos " << item->pos << " to " << next_pos endl;
+                path_clear(item, next);
                 if (next->piece && next->piece->team != team) {
                     // take piece req
                     cout " take piece " << next->piece->symbol << " at ";
@@ -568,6 +551,11 @@ int main() {
 
     //chess.move_piece(Team::WHITE,"a2","d2");// invalid move
     chess.move_piece(Team::WHITE,"b2","c3");// valid move
+    chess.move_piece(Team::WHITE,"b1","d3");// invalid move
+    chess.move_piece(Team::WHITE,"b2","a1");// invalid move
+    chess.move_piece(Team::WHITE,"b2","a3");// valid move
+
+
     //chess.move_piece(Team::WHITE,"a2","a3");// valid move
     chess.move_piece(Team::BLACK,"f2","d3");// valid move
     chess.move_piece(Team::BLACK,"f2","h2");// invalid move
