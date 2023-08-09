@@ -23,4 +23,5 @@ $(TARGET): $(OBJS)
 
 # Clean rule
 clean:
-	rm -f $(OBJS) $(TARGET)
+	#rm -f $(OBJS) $(TARGET)
+	rm -f *.o
