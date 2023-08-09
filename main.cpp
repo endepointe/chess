@@ -95,6 +95,7 @@ class ChessTeam {
         }
     } 
     ~ChessTeam() {}
+    //friend class ChessGame;
     std::string get_team() {
         return team;
     }
@@ -107,6 +108,9 @@ class ChessTeam {
         return symbol_map[p];
     }
 
+    piece_t get_piece_name(Piece p) {
+        return name_map[p];
+    }
 
     void set_piece_position(PieceInfo* p, pos_t pos) {
         p->pos = pos;
@@ -125,19 +129,6 @@ class ChessTeam {
         return nullptr;
     }
 
-    void move_piece(pos_t curr_pos, pos_t next_pos) {
-        PieceInfo* piece_ptr = nullptr;
-        for (PieceInfo& p : pieces) {
-            if (p.pos == curr_pos) {
-                // check if next_pos is open
-                piece_ptr = get_piece_at_position(next_pos);
-                cout piece_ptr->pos << " contains ";
-                cout team_map[piece_ptr->team] << " team's ";
-                cout name_map[piece_ptr->name] endl;
-            }
-        }
-    }
-
     void take_piece(ChessTeam &other_team, Piece p) {
         cout "Team: " << get_team();
         cout " takes:" << other_team.get_team();
@@ -154,6 +145,7 @@ class ChessGame {
         {State::BLACK_WON, "BLACK_WON"}
     };
     std::string state;
+    bool turn;
     std::vector<BoardItem> board;
     std::map<pos_t, unsigned int> starting_location = {
         {" ",0},
@@ -169,6 +161,7 @@ class ChessGame {
     public:
     ChessGame() {
         state = state_map[State::UNFINISHED];
+        turn = true;
     };
     ~ChessGame() {};
     std::string get_game_state() {return state;}
@@ -180,6 +173,9 @@ class ChessGame {
             return player_one;
         }
         return player_two;
+    }
+    piece_t get_piece_name(ChessTeam& team, Piece p) {
+        return team.get_piece_name(p);
     }
 
     void set_board() {
@@ -258,6 +254,61 @@ class ChessGame {
                 }
             }
         }
+    }
+   
+    // PieceInfo
+    /*
+    Team team;
+    Piece name;
+    piece_t symbol;
+    pos_t pos;
+    std::vector<pos_t> possible_moves;
+    */
+    BoardItem* find_board_item(pos_t pos) {
+        for (BoardItem& item : board) {
+            if (item.pos == pos) {
+                return &item;
+            }
+        }
+        return nullptr;
+    }
+
+    bool valid_move(PieceInfo* piece, pos_t move) {
+        cout " possible moves for piece: ";
+        for (pos_t& pos : piece->possible_moves) {
+            cout pos << " ";
+        }
+        cout " " endl;
+        return true;
+    }
+
+    // returns 0 on successful move, < 0 if piece not found
+    int move_piece(pos_t curr_pos, pos_t next_pos) {
+        int ret = -1;
+        if (turn) {
+            update_possible_moves_for_player(player_one);
+            BoardItem* item = find_board_item(curr_pos);
+            BoardItem* next = find_board_item(next_pos);
+            if (item && next && valid_move(item->piece, next_pos)) {
+                cout "move piece: " << get_piece_name(player_one,
+                                                        item->piece->name);
+                cout " " << item->piece->symbol;
+                cout " at pos " << item->pos endl;
+                if (next->piece && next->piece->team != item->piece->team) {
+                    // take piece req
+                    cout " take piece " << next->piece->symbol << " at ";
+                    cout next->piece->pos endl;
+                } else {
+                }
+                ret = 0; 
+            } else { ret = -1; }
+        }
+        if (!turn) {
+            cout "\tfind player two piece at pos " << curr_pos endl;
+            ret = -1;
+        }
+        turn = !turn;
+        return ret;
     }
 
     void update_moves_for_king(PieceInfo& p) {
@@ -479,23 +530,11 @@ int main() {
     ChessGame chess = ChessGame();
     chess.set_board();
     chess.print_board();
-    /*
 
-    ChessTeam p1 = chess.get_player(Team::WHITE);
-    ChessTeam p2 = chess.get_player(Team::BLACK);
-    
-    chess.update_possible_moves_for_player(p1);
-    chess.update_possible_moves_for_player(p2);
+    chess.move_piece("a2","a4");
+    chess.move_piece("f2","d3");
+    chess.move_piece("a2","f2");
+    chess.move_piece("f1","d2");
 
-    chess.print_possible_moves_for_player(p1);
-    chess.print_possible_moves_for_player(p2);
-
-    p1.take_piece(p2, ROOK);
-    p1.move_piece("a2","b2");
-    p1.move_piece("a2", "c2");
-    p2.move_piece("f2","h1");
-    */
-
-
-    return 0;
+   return 0;
 }
