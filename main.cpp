@@ -272,13 +272,35 @@ class ChessGame {
         }
         return nullptr;
     }
+    bool path_clear(pos_t curr, pos_t next) {
+        bool clear = false;
+        for (BoardItem& item : board) {
+            if (item.piece && item.piece->pos == curr) {
+                cout "possible moves found at pos " << item.piece->pos;
+                cout " for " << item.piece->symbol << ": ";
+                for (pos_t pos : item.piece->possible_moves) {
+                    cout pos << " ";
+                    if (next != pos) {
+                        clear = false;
+                        break;
+                    }
+                }
+                clear = true;
+                break;
+            }
+        }
+        cout nl;
+        return clear; 
+    }
 
     bool valid_move(PieceInfo* piece, pos_t move) {
         bool found = false;
         for (pos_t& pos : piece->possible_moves) {
             if (pos == move) {
-                cout " possible move found at pos " << pos;
-                cout " for " << piece->symbol endl;
+                // if not a knight, check for pieces in path to move
+                if (piece->name != 1) {
+                    path_clear(piece->pos, move);
+                }
                 found = true;
                 break;
             }
@@ -540,6 +562,6 @@ int main() {
     chess.move_piece("f2","d3");
     chess.move_piece("a2","f2");
     chess.move_piece("f1","d2");
-
+    chess.move_piece("a2","d2");// invalid move
    return 0;
 }
