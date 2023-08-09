@@ -522,36 +522,29 @@ class ChessGame {
     }
 
     bool path_clear(BoardItem* curr, BoardItem* next) {
-        bool clear = false;
+        bool clear = true;
         int i = 63-(63-curr->index);
         int j = 63-(63-next->index);
         if (board.at(i).piece->name == 1) {
-            return true;
+            return clear;
         }
         if (i < j) {
-            while (i <= j) {
-                if (board.at(i).piece) {
-                    for (pos_t p : board.at(i).piece->possible_moves) {
-                        if (p != board.at(j).pos && i != j) {
-                            clear = false;
-                            break;
-                        }
-                    }
-                }
-                clear = true;
+            while (i <= j && clear) {
                 i++;
             }
         } else {
-            while (i >= j) {
-                if (board.at(i).piece) {
-                    for (pos_t p : board.at(i).piece->possible_moves) {
-                        if (p != board.at(j).pos && i != j) {
-                            clear = false;
-                            break;
+            while (i >= j && clear) {
+                for (pos_t ppos : curr->piece->possible_moves) {
+                    if (ppos == board.at(j).pos && board.at(i).piece) {
+                        cout "\t" << board.at(j).pos << " ";
+                        if (board.at(i).piece) {
+                            cout  "--" << board.at(i).pos;
+                            cout " " << board.at(i).piece->symbol << " ";
                         }
                     }
+
                 }
-                clear = true;
+                cout nl;
                 i--;
             }
 
@@ -584,11 +577,8 @@ class ChessGame {
                 cout " " << item->piece->symbol;
                 cout " at pos " << item->pos << " to " << next_pos endl;
                 if (path_clear(item,next)) {
-                    //redraw_board();
-                    cout "update" endl; 
                     if (next->piece && next->piece->team != team) {
                         item->piece->pos = next_pos;
-                        cout "\tremove piece: " <<next->piece->symbol endl;
                         player_two.remove_piece(next_pos);
                         ret = 0;
                     }
