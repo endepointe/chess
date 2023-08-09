@@ -444,7 +444,7 @@ class ChessGame {
                 for (PieceInfo& p : player_one.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
-                        //player_one.set_piece_position(item.piece,loc);
+                        item.pos = p.pos;
                         board.push_back(item);
                         blank = false;
                     }
@@ -452,13 +452,14 @@ class ChessGame {
                 for (PieceInfo& p : player_two.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
-                        //player_two.set_piece_position(item.piece,loc);
+                        item.pos = p.pos;
                         board.push_back(item);
                         blank = false;
                     }
                 } 
                 if (blank) {
                     item.piece = nullptr;
+                    item.pos = loc;
                     board.push_back(item);
                 }
             }
@@ -572,8 +573,9 @@ class ChessGame {
     // returns 0 on successful move, < 0 if piece not found
     int move_piece(Team team, pos_t curr_pos, pos_t next_pos) {
         int ret = -1;
+        update_possible_moves_for_player(player_one);
+        update_possible_moves_for_player(player_two);
         if (team == Team::WHITE) {
-            update_possible_moves_for_player(player_one);
             BoardItem* item = find_board_item(curr_pos);
             BoardItem* next = find_board_item(next_pos);
             if (item && next && potential_move(item->piece, next_pos)) {
@@ -583,24 +585,13 @@ class ChessGame {
                 cout " at pos " << item->pos << " to " << next_pos endl;
                 if (path_clear(item,next)) {
                     //redraw_board();
-                    /*
                     cout "update" endl; 
                     if (next->piece && next->piece->team != team) {
-                        cout " remove piece\n";
-                        player_two.remove_piece(next->piece->pos);
-                        item->piece->pos = next->piece->pos;
-                        item->piece->pos = next->piece->pos;
-                        for (PieceInfo& p : player_two.get_pieces()){
-                            cout p.pos << " ";
-                        }
-                        cout nl;
-                        player_two.remove_piece(next->piece->pos);
-                        for (PieceInfo& p : player_two.get_pieces()){
-                            cout p.pos << " ";
-                        }
+                        item->piece->pos = next_pos;
+                        cout "\tremove piece: " <<next->piece->symbol endl;
+                        player_two.remove_piece(next_pos);
                         ret = 0;
                     }
-                    */
                     if (next->piece && next->piece->team == team) {
                         ret = -1;
                     }
