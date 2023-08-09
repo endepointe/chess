@@ -525,6 +525,7 @@ class ChessGame {
         bool clear = true;
         int i = 63-(63-curr->index);
         int j = 63-(63-next->index);
+        cout i << " " << j endl;
         if (board.at(i).piece->name == 1) {
             return clear;
         }
@@ -534,17 +535,19 @@ class ChessGame {
             }
         } else {
             while (i >= j && clear) {
-                for (pos_t ppos : curr->piece->possible_moves) {
-                    if (ppos == board.at(j).pos && board.at(i).piece) {
-                        cout "\t"<<board.at(i).pos <<" "<< board.at(j).pos << " ";
-                        if (board.at(i).piece) {
-                            cout  "--" << board.at(i).pos;
-                            cout " " << board.at(i).piece->symbol << " ";
+                if (board.at(i).pos != board.at(j).pos) {
+                    if (board.at(i).piece && 
+                            board.at(i).pos[1]<board.at(j).pos[1]) {
+                        cout "\t-- ";
+                        for (pos_t p : board.at(i).piece->possible_moves) {
+                            cout p << " ";
                         }
+                        cout nl;
+                        cout board.at(i).pos << " " << board.at(i).piece->symbol;
+                        cout " -- to " << board.at(j).pos endl;
+                        //clear = false;
                     }
-
                 }
-                cout nl;
                 i--;
             }
 
@@ -571,12 +574,15 @@ class ChessGame {
         if (team == Team::WHITE) {
             BoardItem* item = find_board_item(curr_pos);
             BoardItem* next = find_board_item(next_pos);
+            assert(item);
+            assert(next);
             if (item && next && potential_move(item->piece, next_pos)) {
                 cout "try to move piece: " << get_piece_name(player_one,
                                                         item->piece->name);
                 cout " " << item->piece->symbol;
                 cout " at pos " << item->pos << " to " << next_pos endl;
                 if (path_clear(item,next)) {
+                    cout " path clear \n";
                     if (next->piece && next->piece->team != team) {
                         item->piece->pos = next_pos;
                         player_two.remove_piece(next_pos);
@@ -590,8 +596,9 @@ class ChessGame {
                         ret = 0;
                     }
                     redraw_board();
+                } else {
+                    ret = -1;
                 }
-                ret = 0; 
             } else {ret = -1;}
         }
 
