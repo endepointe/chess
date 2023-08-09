@@ -275,9 +275,8 @@ class ChessGame {
 
     bool valid_move(PieceInfo* piece, pos_t move) {
         bool found = false;
-        cout " possible moves for piece: ";
         for (pos_t& pos : piece->possible_moves) {
-            if (piece->pos == pos) {
+            if (pos == move) {
                 cout " possible move found at pos " << pos endl;
                 found = true;
                 break;
