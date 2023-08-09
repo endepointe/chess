@@ -332,36 +332,36 @@ class ChessGame {
         p.possible_moves.clear();
         // left+up
         if (left >= 97 && up <= 8) { 
-            while (left != 'a'-1) {
-                p.possible_moves.push_back(
-                        (left)+std::to_string(up));
-                left--;
-                up++;
+            char l = left; int u = up;
+            while (l != 'a'-1) {
+                p.possible_moves.push_back((l)+std::to_string(u));
+                l--; u++;
             }
         }
+
         // right+up
-        if (right <= 122 && up <= 8) { 
-            while (right != 'h'+1) {
-                p.possible_moves.push_back(
-                        (right)+std::to_string(up));
-                right++;
-                up++;
+        if (right <= 104 && up <= 8) { 
+            char r = right; int u = up;
+            while (r != 'h'+1) {
+                p.possible_moves.push_back((r)+std::to_string(u));
+                r++; u++;
             }
         }
         // down+left
         if (down >= 1 && left != 'a'-1) { 
-            while (down >= 1) {
-                p.possible_moves.push_back(left + std::to_string(down)); 
-                down--;
-                left--;
+            int d = down; char l = left;
+            while (d >= 1) {
+                p.possible_moves.push_back(l + std::to_string(d)); 
+                d--; l--;
             }
         }
         // down+right
         if (down >= 1 && right != 'h'+1) {
-            while (down >= 1) {
-                p.possible_moves.push_back(right + std::to_string(down));
-                down--;
-                right++;
+            int d = down; char r = right;
+            while (d >= 1) {
+                p.possible_moves.push_back(r + std::to_string(d));
+                d--;
+                r++;
             }
         }
 
@@ -489,8 +489,9 @@ class ChessGame {
 
     bool path_clear(PieceInfo* curr, pos_t next) {
         bool clear = false;
+        int distance = 0;
         cout "possible moves found at pos " << curr->pos;
-        cout " for " << curr->symbol << ": ";
+        cout " for " << curr->symbol << " to " << next;
         cout nl;
         cout "Checking that the path is clear...\n";
         /*
@@ -499,29 +500,33 @@ class ChessGame {
         }
         */
         if (curr->pos[0] < next[0]) {
-            // move left
-            if (curr->pos[1] < next[1]) {
-                // index < index of curr position on board
-            }
-            if (curr->pos[1] >= next[1]) {
-                // index < index of curr position on board
-            }
+            distance += next[0] - curr->pos[0];
         } 
         if (curr->pos[0] > next[0]) {
-            // move right
+            distance += curr->pos[0] - next[0] ;
         }
+        if (curr->pos[1] < next[1]) {
+            distance += next[1] - curr->pos[1];
+        }
+        if (curr->pos[1] > next[1]) {
+            distance += curr->pos[1] - next[1];
+        }
+        cout distance; 
         cout nl;
         return clear; 
     }
 
     bool potential_move(PieceInfo* piece, pos_t move) {
         bool found = false;
+        cout piece->name << " position: " << piece->pos << " " << move endl;
         for (pos_t& pos : piece->possible_moves) {
             if (pos == move) {
+                cout pos << " ";
                 found = true;
-                break;
+                //break;
             }
         }
+        cout nl;
         return found;
     }
 
@@ -533,6 +538,7 @@ class ChessGame {
             BoardItem* item = find_board_item(curr_pos);
             BoardItem* next = find_board_item(next_pos);
             assert(item != nullptr);
+            assert(item->piece != nullptr);
             assert(next != nullptr);
             if (item && next && potential_move(item->piece, next_pos)) {
                 cout "try to move piece: " << get_piece_name(player_one,
@@ -559,16 +565,11 @@ int main() {
     ChessGame chess = ChessGame();
     chess.set_board();
     chess.print_board();
-    /*
-    chess.move_piece("a2","a4");
-    chess.move_piece("f2","d3");
-    chess.move_piece("a2","f2");
-    chess.move_piece("f1","d2");
-    */
-    chess.move_piece(Team::WHITE,"a2","d2");// invalid move
-    chess.move_piece(Team::WHITE,"a2","a3");// valid move
+
+    //chess.move_piece(Team::WHITE,"a2","d2");// invalid move
+    chess.move_piece(Team::WHITE,"b2","c3");// valid move
+    //chess.move_piece(Team::WHITE,"a2","a3");// valid move
     chess.move_piece(Team::BLACK,"f2","d3");// valid move
     chess.move_piece(Team::BLACK,"f2","h2");// invalid move
-    //chess.move_piece("b1","d3");// invalid move
     return 0;
 }
