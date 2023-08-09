@@ -277,7 +277,8 @@ class ChessGame {
         bool found = false;
         for (pos_t& pos : piece->possible_moves) {
             if (pos == move) {
-                cout " possible move found at pos " << pos endl;
+                cout " possible move found at pos " << pos;
+                cout " for " << piece->symbol endl;
                 found = true;
                 break;
             }
