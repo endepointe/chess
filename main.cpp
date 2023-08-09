@@ -610,6 +610,7 @@ class ChessGame {
                 ret = 0; 
             } else {ret = -1;}
         }
+
         if (team == Team::BLACK) {
             cout "\tfind player two piece at pos " << curr_pos endl;
         }
@@ -623,8 +624,8 @@ int main() {
     chess.print_board();
 
     //chess.move_piece(Team::WHITE,"a2","d2");// invalid move
-    chess.move_piece(Team::WHITE,"b2","d4");// valid move
-    chess.move_piece(Team::WHITE,"d4","f2");// valid move
+    chess.move_piece(Team::WHITE,"b2","c3");// valid move
+    chess.move_piece(Team::WHITE,"c3","d4");// valid move
     //chess.move_piece(Team::WHITE,"a3","c5");// valid move
     //chess.move_piece(Team::WHITE,"c5","f2");// valid move
 
