@@ -131,11 +131,15 @@ class ChessTeam {
         return nullptr;
     }
 
-    void take_piece(ChessTeam &other_team, Piece p) {
-        cout "Team: " << get_team();
-        cout " takes:" << other_team.get_team();
-        cout "'s " << other_team.get_piece_symbol(p) << "\n";
-        other_team.get_pieces();
+    void remove_piece(pos_t del) {
+        uint i = 0;
+        for (PieceInfo& p : pieces) {
+            if (p.pos == del) {
+                pieces.erase(pieces.begin()+i);
+                break;
+            }
+            i++;
+        }
     }
 };
 
@@ -421,18 +425,39 @@ class ChessGame {
             }
         }
     }
-    void print_possible_moves_for_player(ChessTeam& team) {
-        for (PieceInfo& p : team.get_pieces()) {
-            cout team.get_piece_symbol(p.name);
-            cout " at position " << team.get_piece_position(p) << " can move to: ";
-            for (pos_t m : p.possible_moves) {
-                cout m << " ";
-            }
-            cout "\n";
-        }
-        cout "\n";
-    }
+
     void redraw_board() {
+        int i = 0;
+        bool blank;
+        board.clear();
+        for (int row = size - 1; row >= 0; row--) {
+            for (uint_t col = 0; col < size; col++) {
+                blank = true;
+                BoardItem item;
+                std::string loc = alpha8[col] + std::to_string(num8[row]);
+                item.index = i++; 
+                // yeah its wasteful but saves lines
+                for (PieceInfo& p : player_one.get_pieces()){
+                    if (loc == p.pos) {
+                        item.piece = &p;
+                        board.push_back(item);
+                        blank = false;
+                    }
+                } 
+                for (PieceInfo& p : player_two.get_pieces()){
+                    if (loc == p.pos) {
+                        item.piece = &p;
+                        board.push_back(item);
+                        blank = false;
+                    }
+                } 
+                if (blank) {
+                    item.piece = nullptr;
+                    board.push_back(item);
+                }
+            }
+        }
+        print_board();
     }
 
     std::vector<BoardItem> print_board() {
@@ -491,14 +516,39 @@ class ChessGame {
 
     bool path_clear(BoardItem* curr, BoardItem* next) {
         bool clear = false;
-        cout "\tpossible moves found at pos " << curr->piece->pos;
-        cout " for " << curr->piece->symbol;
-        cout nl;
-        cout "\tChecking that the path is clear...\n";
-        int i = (63-curr->index);
+        int i = 63-(63-curr->index);
         int j = 63-(63-next->index);
-        cout "\tboard item at index: " << (next->index) << " " << board.at(j).pos;
-        cout nl;
+        if (board.at(i).piece->name == 1) {
+            return true;
+        }
+        if (i < j) {
+            while (i <= j) {
+                if (board.at(i).piece) {
+                    for (pos_t p : board.at(i).piece->possible_moves) {
+                        if (p != board.at(j).pos && i != j) {
+                            clear = false;
+                            break;
+                        }
+                    }
+                }
+                clear = true;
+                i++;
+            }
+        } else {
+            while (i >= j) {
+                if (board.at(i).piece) {
+                    for (pos_t p : board.at(i).piece->possible_moves) {
+                        if (p != board.at(j).pos && i != j) {
+                            clear = false;
+                            break;
+                        }
+                    }
+                }
+                clear = true;
+                i--;
+            }
+
+        }
         return clear; 
     }
 
@@ -520,19 +570,38 @@ class ChessGame {
             update_possible_moves_for_player(player_one);
             BoardItem* item = find_board_item(curr_pos);
             BoardItem* next = find_board_item(next_pos);
-            assert(item != nullptr);
-            assert(item->piece != nullptr);
-            assert(next != nullptr);
             if (item && next && potential_move(item->piece, next_pos)) {
                 cout "try to move piece: " << get_piece_name(player_one,
                                                         item->piece->name);
                 cout " " << item->piece->symbol;
                 cout " at pos " << item->pos << " to " << next_pos endl;
-                path_clear(item, next);
-                if (next->piece && next->piece->team != team) {
-                    // take piece req
-                    cout " take piece " << next->piece->symbol << " at ";
-                    cout next->piece->pos endl;
+                if (path_clear(item,next)) {
+                    //redraw_board();
+                    cout "update" endl; 
+                    if (next->piece && next->piece->team != team) {
+                        /*
+                        item->piece->pos = next->piece->pos;
+                        for (PieceInfo& p : player_two.get_pieces()){
+                            cout p.pos << " ";
+                        }
+                        cout nl;
+                        player_two.remove_piece(next->piece->pos);
+                        for (PieceInfo& p : player_two.get_pieces()){
+                            cout p.pos << " ";
+                        }
+                        */
+                        cout nl;
+ 
+                        ret = 0;
+                    }
+                    if (next->piece && next->piece->team == team) {
+                        ret = -1;
+                    }
+                    if (!next->piece) {
+                        item->piece->pos = next->pos;
+                        ret = 0;
+                    }
+                    redraw_board();
                 }
                 ret = 0; 
             } else {ret = -1;}
@@ -554,6 +623,10 @@ int main() {
     chess.move_piece(Team::WHITE,"b1","d3");// invalid move
     chess.move_piece(Team::WHITE,"b2","a1");// invalid move
     chess.move_piece(Team::WHITE,"b2","a3");// valid move
+    //chess.move_piece(Team::WHITE,"a3","c5");// valid move
+    //chess.move_piece(Team::WHITE,"c5","f2");// valid move
+
+
 
 
     //chess.move_piece(Team::WHITE,"a2","a3");// valid move
