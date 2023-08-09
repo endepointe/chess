@@ -135,6 +135,7 @@ class ChessTeam {
         uint i = 0;
         for (PieceInfo& p : pieces) {
             if (p.pos == del) {
+                cout " removing piece: " << p.pos endl;
                 pieces.erase(pieces.begin()+i);
                 break;
             }
@@ -440,6 +441,7 @@ class ChessGame {
                 for (PieceInfo& p : player_one.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
+                        //player_one.set_piece_position(item.piece,loc);
                         board.push_back(item);
                         blank = false;
                     }
@@ -447,6 +449,7 @@ class ChessGame {
                 for (PieceInfo& p : player_two.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
+                        //player_two.set_piece_position(item.piece,loc);
                         board.push_back(item);
                         blank = false;
                     }
@@ -577,9 +580,12 @@ class ChessGame {
                 cout " at pos " << item->pos << " to " << next_pos endl;
                 if (path_clear(item,next)) {
                     //redraw_board();
+                    /*
                     cout "update" endl; 
                     if (next->piece && next->piece->team != team) {
-                        /*
+                        cout " remove piece\n";
+                        player_two.remove_piece(next->piece->pos);
+                        item->piece->pos = next->piece->pos;
                         item->piece->pos = next->piece->pos;
                         for (PieceInfo& p : player_two.get_pieces()){
                             cout p.pos << " ";
@@ -589,11 +595,9 @@ class ChessGame {
                         for (PieceInfo& p : player_two.get_pieces()){
                             cout p.pos << " ";
                         }
-                        */
-                        cout nl;
- 
                         ret = 0;
                     }
+                    */
                     if (next->piece && next->piece->team == team) {
                         ret = -1;
                     }
@@ -619,10 +623,8 @@ int main() {
     chess.print_board();
 
     //chess.move_piece(Team::WHITE,"a2","d2");// invalid move
-    chess.move_piece(Team::WHITE,"b2","c3");// valid move
-    chess.move_piece(Team::WHITE,"b1","d3");// invalid move
-    chess.move_piece(Team::WHITE,"b2","a1");// invalid move
-    chess.move_piece(Team::WHITE,"b2","a3");// valid move
+    chess.move_piece(Team::WHITE,"b2","d4");// valid move
+    chess.move_piece(Team::WHITE,"d4","f2");// valid move
     //chess.move_piece(Team::WHITE,"a3","c5");// valid move
     //chess.move_piece(Team::WHITE,"c5","f2");// valid move
 
