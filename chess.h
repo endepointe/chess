@@ -278,10 +278,10 @@ class ChessGame {
         if (right <= 104) { 
             p.possible_moves.push_back((right) + std::to_string(atoi(&p.pos[1])));
         }
-        if (up >= 1) { 
+        if (up <= 8) { 
             p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
         }
-        if (down >= 8) {
+        if (down <= 1) {
             p.possible_moves.push_back(p.pos[0] + std::to_string(down));
         }
         if (up <= 8 && left >= 97) {
@@ -400,16 +400,16 @@ class ChessGame {
         }
         if (up >= 1) { 
             int u = up;
-            while (u <= 8) {
+            while (u >= 1) {
                 p.possible_moves.push_back(p.pos[0] + std::to_string(u)); 
-                u++;
+                u--;
             }
         }
-        if (down >= 8) {
+        if (down <= 8) {
             int d = down;
-            while (d >= 1) {
+            while (d <= 8) {
                 p.possible_moves.push_back(p.pos[0] + std::to_string(d));
-                d--;
+                d++;
             }
         }
     }
