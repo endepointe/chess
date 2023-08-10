@@ -383,29 +383,33 @@ class ChessGame {
         int down = atoi(&p.pos[1]) - 1; // int to check for < 0
         p.possible_moves.clear();
         if (left >= 97) { 
-            while (left != 'a'-1) {
+            char l = left;;
+            while (l != 'a'-1) {
                 p.possible_moves.push_back(
-                        (left)+std::to_string(atoi(&p.pos[1])));
-                left--;
+                        (l)+std::to_string(atoi(&p.pos[1])));
+                l--;
             }
         }
-        if (right <= 122) { 
-            while (right != 'h'+1) {
+        if (right <= 104) { 
+            char r = right;
+            while (r != 'h'+1) {
                 p.possible_moves.push_back(
-                        (right)+std::to_string(atoi(&p.pos[1])));
-                right++;
+                        (r)+std::to_string(atoi(&p.pos[1])));
+                r++;
             }
         }
         if (up >= 1) { 
-            while (up <= 8) {
-                p.possible_moves.push_back(p.pos[0] + std::to_string(up)); 
-                up++;
+            int u = up;
+            while (u <= 8) {
+                p.possible_moves.push_back(p.pos[0] + std::to_string(u)); 
+                u++;
             }
         }
         if (down >= 8) {
-            while (down >= 1) {
-                p.possible_moves.push_back(p.pos[0] + std::to_string(down));
-                down--;
+            int d = down;
+            while (d >= 1) {
+                p.possible_moves.push_back(p.pos[0] + std::to_string(d));
+                d--;
             }
         }
     }
@@ -423,7 +427,7 @@ class ChessGame {
             if (p.name == 2) { 
                 update_moves_for_bishop(p);
             }
-            // rooks
+            // rook
             if (p.name == 3) { 
                 update_moves_for_rook(p);
             }
@@ -444,7 +448,7 @@ class ChessGame {
                 for (PieceInfo& p : player_one.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
-                        item.pos = p.pos;
+                        item.pos = loc;//p.pos;
                         board.push_back(item);
                         blank = false;
                     }
@@ -452,7 +456,7 @@ class ChessGame {
                 for (PieceInfo& p : player_two.get_pieces()){
                     if (loc == p.pos) {
                         item.piece = &p;
-                        item.pos = p.pos;
+                        item.pos = loc;//p.pos;
                         board.push_back(item);
                         blank = false;
                     }
@@ -530,7 +534,29 @@ class ChessGame {
             return clear;
         }
         if (i < j) {
-            while (i <= j && clear) {
+            while (i <= j) {
+                for (pos_t p : board.at(curr->index).piece->possible_moves) {
+                    if (board.at(i).piece && board.at(i).pos == p 
+                            && i != j) {
+                        cout "\t--this piece ";
+                        cout board.at(curr->index).piece->symbol;
+                        cout " at " << board.at(i).pos;
+                        cout " in path of: ";
+                        cout board.at(curr->index).piece->symbol endl;
+                        bool found = false;
+                        for (pos_t checkp : board.at(i).piece->possible_moves) {
+                            cout " ...checking paths from " << checkp endl;
+                            if (checkp == board.at(j).pos) {
+                                found = true;
+                            }
+                            for (pos_t pp:
+                                    board.at(curr->index).piece->possible_moves) {
+                                if (checkp == pp) found = true;
+                            }
+                        }
+                        if (found) clear = false;
+                    }
+                }
                 i++;
             }
         } else {
@@ -538,47 +564,49 @@ class ChessGame {
                 for (pos_t p : board.at(curr->index).piece->possible_moves) {
                     if (board.at(i).piece && board.at(i).pos == p 
                             && i != j) {
-                        cout "\t--this piece in path: ";
-                        cout board.at(i).piece->symbol endl;
-                    }
-                }
-          
-                /*
-                if (board.at(i).pos != board.at(j).pos) {
-                    if (board.at(i).piece && 
-                            board.at(i).pos[1]<board.at(j).pos[1]) {
-                        cout "\t-- ";
-                        for (pos_t p : board.at(curr->index).piece->possible_moves) {
-                            cout p << " ";
+                        cout "\t--this piece ";
+                        cout board.at(curr->index).piece->symbol;
+                        cout " at " << board.at(i).pos;
+                        cout " in path of: ";
+                        cout board.at(curr->index).piece->symbol endl;
+                        bool found = false;
+                        for (pos_t checkp : board.at(i).piece->possible_moves) {
+                            cout " ...checking paths from " << checkp endl;
+                            if (checkp == board.at(j).pos) {
+                                found = true;
+                            }
+                            for (pos_t pp:
+                                    board.at(curr->index).piece->possible_moves) {
+                                if (checkp == pp) found = true;
+                            }
                         }
-                        cout nl;
-                        //cout board.at(i).pos << " " << board.at(i).piece->symbol;
-                        //cout " -- to " << board.at(j).pos endl;
-                        //clear = false;
+                        if (found) clear = false;
                     }
                 }
-                */
                 i--;
             }
 
         }
-        return clear; 
+        return true;//clear; 
     }
 
     bool potential_move(PieceInfo* piece, pos_t move) {
         bool found = false;
-        for (pos_t& pos : piece->possible_moves) {
+        cout "potential moves: ";
+        for (pos_t pos : piece->possible_moves) {
+            cout pos << " ";
             if (pos == move) {
                 found = true;
                 break;
             }
         }
+        cout nl;
         return found;
     }
 
     // returns 0 on successful move, < 0 if piece not found
     int move_piece(Team team, pos_t curr_pos, pos_t next_pos) {
-        int ret = -1;
+        int ret;
         update_possible_moves_for_player(player_one);
         update_possible_moves_for_player(player_two);
         if (team == Team::WHITE) {
@@ -594,8 +622,10 @@ class ChessGame {
                 if (path_clear(item,next)) {
                     cout " path clear \n";
                     if (next->piece && next->piece->team != team) {
+                        cout item->piece->symbol << " takes piece at ";
+                        cout next->piece->symbol endl;
                         item->piece->pos = next_pos;
-                        player_two.remove_piece(next_pos);
+                        player_two.remove_piece(next->pos);
                         ret = 0;
                     }
                     if (next->piece && next->piece->team == team) {
@@ -605,7 +635,6 @@ class ChessGame {
                         item->piece->pos = next->pos;
                         ret = 0;
                     }
-                    redraw_board();
                 } else {
                     ret = -1;
                 }
@@ -615,6 +644,7 @@ class ChessGame {
         if (team == Team::BLACK) {
             cout "\tfind player two piece at pos " << curr_pos endl;
         }
+        redraw_board();
         return ret;
     }
 };
