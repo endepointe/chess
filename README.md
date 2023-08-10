@@ -10,6 +10,10 @@ run using:
 
     ./chess
 
+clean using:
+
+    make clean
+
 ![starting position for game](chess.png "starting position for game")
 
 ## Rules
