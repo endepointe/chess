@@ -508,14 +508,6 @@ class ChessGame {
         return board;
     }
    
-    // PieceInfo
-    /*
-    Team team;
-    Piece name;
-    piece_t symbol;
-    pos_t pos;
-    std::vector<pos_t> possible_moves;
-    */
     BoardItem* find_board_item(pos_t pos) {
         for (BoardItem& item : board) {
             if (item.pos == pos) {
@@ -529,7 +521,6 @@ class ChessGame {
         bool clear = true;
         int i = 63-(63-curr->index);
         int j = 63-(63-next->index);
-        cout i << " " << j endl;
         if (board.at(i).piece->name == 1) {
             return clear;
         }
@@ -538,14 +529,8 @@ class ChessGame {
                 for (pos_t p : board.at(curr->index).piece->possible_moves) {
                     if (board.at(i).piece && board.at(i).pos == p 
                             && i != j) {
-                        cout "\t--this piece ";
-                        cout board.at(curr->index).piece->symbol;
-                        cout " at " << board.at(i).pos;
-                        cout " in path of: ";
-                        cout board.at(curr->index).piece->symbol endl;
                         bool found = false;
                         for (pos_t checkp : board.at(i).piece->possible_moves) {
-                            cout " ...checking paths from " << checkp endl;
                             if (checkp == board.at(j).pos) {
                                 found = true;
                             }
@@ -564,14 +549,8 @@ class ChessGame {
                 for (pos_t p : board.at(curr->index).piece->possible_moves) {
                     if (board.at(i).piece && board.at(i).pos == p 
                             && i != j) {
-                        cout "\t--this piece ";
-                        cout board.at(curr->index).piece->symbol;
-                        cout " at " << board.at(i).pos;
-                        cout " in path of: ";
-                        cout board.at(curr->index).piece->symbol endl;
                         bool found = false;
                         for (pos_t checkp : board.at(i).piece->possible_moves) {
-                            cout " ...checking paths from " << checkp endl;
                             if (checkp == board.at(j).pos) {
                                 found = true;
                             }
@@ -587,14 +566,14 @@ class ChessGame {
             }
 
         }
-        return true;//clear; 
+        // the sentinel 'clear' is not changing on the correct value.
+        // skill issue. for now, dont make moves you know are not correct.
+        return true;//clear;
     }
 
     bool potential_move(PieceInfo* piece, pos_t move) {
         bool found = false;
-        cout "potential moves: ";
         for (pos_t pos : piece->possible_moves) {
-            cout pos << " ";
             if (pos == move) {
                 found = true;
                 break;
@@ -615,15 +594,8 @@ class ChessGame {
             assert(item);
             assert(next);
             if (item && next && potential_move(item->piece, next_pos)) {
-                cout "try to move piece: " << get_piece_name(player_one,
-                                                        item->piece->name);
-                cout " " << item->piece->symbol;
-                cout " at pos " << item->pos << " to " << next_pos endl;
                 if (path_clear(item,next)) {
-                    cout " path clear \n";
                     if (next->piece && next->piece->team != team) {
-                        cout item->piece->symbol << " takes piece at ";
-                        cout next->piece->symbol endl;
                         item->piece->pos = next_pos;
                         player_two.remove_piece(next->pos);
                         ret = 0;
@@ -642,8 +614,30 @@ class ChessGame {
         }
 
         if (team == Team::BLACK) {
-            cout "\tfind player two piece at pos " << curr_pos endl;
+            BoardItem* item = find_board_item(curr_pos);
+            BoardItem* next = find_board_item(next_pos);
+            assert(item);
+            assert(next);
+            if (item && next && potential_move(item->piece, next_pos)) {
+                if (path_clear(item,next)) {
+                    if (next->piece && next->piece->team != team) {
+                        item->piece->pos = next_pos;
+                        player_one.remove_piece(next->pos);
+                        ret = 0;
+                    }
+                    if (next->piece && next->piece->team == team) {
+                        ret = -1;
+                    }
+                    if (!next->piece) {
+                        item->piece->pos = next->pos;
+                        ret = 0;
+                    }
+                } else {
+                    ret = -1;
+                }
+            } else {ret = -1;}
         }
+
         redraw_board();
         return ret;
     }
