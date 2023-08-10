@@ -534,20 +534,30 @@ class ChessGame {
                 i++;
             }
         } else {
-            while (i >= j && clear) {
+            while (i >= j) {
+                for (pos_t p : board.at(curr->index).piece->possible_moves) {
+                    if (board.at(i).piece && board.at(i).pos == p 
+                            && i != j) {
+                        cout "\t--this piece in path: ";
+                        cout board.at(i).piece->symbol endl;
+                    }
+                }
+          
+                /*
                 if (board.at(i).pos != board.at(j).pos) {
                     if (board.at(i).piece && 
                             board.at(i).pos[1]<board.at(j).pos[1]) {
                         cout "\t-- ";
-                        for (pos_t p : board.at(i).piece->possible_moves) {
+                        for (pos_t p : board.at(curr->index).piece->possible_moves) {
                             cout p << " ";
                         }
                         cout nl;
-                        cout board.at(i).pos << " " << board.at(i).piece->symbol;
-                        cout " -- to " << board.at(j).pos endl;
+                        //cout board.at(i).pos << " " << board.at(i).piece->symbol;
+                        //cout " -- to " << board.at(j).pos endl;
                         //clear = false;
                     }
                 }
+                */
                 i--;
             }
 
